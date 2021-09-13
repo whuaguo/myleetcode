@@ -59,7 +59,6 @@ ret:
     pstr[len] = 0;
 
     return pstr;
-    
 }
 
 // @lc code=end
