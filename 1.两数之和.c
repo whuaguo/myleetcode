@@ -14,7 +14,8 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize){
     for (int i = 0; i < numsSize - 1; i++)
     {
         int expect = target - nums[i];
-           
+
+        //add comments   
         for (int j = i + 1; j < numsSize; j++) {
             if (nums[j] == expect) {
                 int *returnnums;
