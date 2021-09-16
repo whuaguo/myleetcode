@@ -58,10 +58,12 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
             equal = 1;
         }
 
+        //最小的可能都>0, 再往右移动没意义，不会有新的答案，退出
         if (sortnums[0] + sortnums[i] + sortnums[k] >0) {
             break;
         }
 
+        //最大的可能都<0, i不动，j，k怎么移动都没意义，直接移动i，往后寻找
         if (sortnums[j] + sortnums[i] + sortnums[numsSize -1] < 0) {
             continue;
         }
