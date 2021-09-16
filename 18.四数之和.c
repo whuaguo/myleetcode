@@ -6,10 +6,10 @@
 
 // @lc code=start
 
-#define SUM(a,b,c,d)    (sortnums[a]+sortnums[b]+sortnums[c]+sortnums[d])
-#define EXIST(a,b,c,d)  (answers[answer_num - 1][0] == sortnums[a] && \
-                         answers[answer_num - 1][1] == sortnums[b] && \
-                         answers[answer_num - 1][2] == sortnums[c])
+#define SUM(a,b,c,d)        ((long)sortnums[a]+(long)sortnums[b]+(long)sortnums[c]+(long)sortnums[d])
+#define EXIST(a,b,c,d)      (answers[answer_num - 1][0] == sortnums[a] && \
+                             answers[answer_num - 1][1] == sortnums[b] && \
+                             answers[answer_num - 1][2] == sortnums[c])
 
 /**
  * Return an array of arrays of size *returnSize.
@@ -52,21 +52,30 @@ int** fourSum(int* nums, int numsSize, int target, int* returnSize, int** return
     }
 
     //i is the mid of the 3 numbers
-    for (i1 = 1; i2 < numsSize - 2; i1 ++) 
+    for (i1 = 1; i1 < numsSize - 2; i1 ++) 
     {
+        int equal = 0;
+
+        //最小的可能都>0, 再往右移动没意义，不会有新的答案，退出
+        if (SUM(0, i1, i1+1, i1+2) > target) {
+            break;
+        }
+
+        if (sortnums[i1] == sortnums[i1-1]) {
+            equal = 1;
+            if ((i1 >1) &&(sortnums[i1 -1] == sortnums[i1-2])) {
+                continue;
+            }
+        }
+
         for (i2 = i1 + 1; i2 < numsSize -1; i2++) 
         {
-            int equal = 0;
             j = i1 - 1;
             k = i2 + 1;
 
-            if (sortnums[i1] == sortnums[i1-1]) {
-                equal = 1;
-            }
-
             //最小的可能都>0, 再往右移动没意义，不会有新的答案，退出
             if (SUM(0, i1, i2, k) > target) {
-                goto out;
+                continue;
             }
 
             //最大的可能都<0, i不动，j，k怎么移动都没意义，直接移动i，往后寻找

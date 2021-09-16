@@ -56,6 +56,9 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 
         if (sortnums[i] == sortnums[i-1]) {
             equal = 1;
+            if((i > 1) && (sortnums[i-1]==sortnums[i-2])) {
+                continue;
+            }
         }
 
         //最小的可能都>0, 再往右移动没意义，不会有新的答案，退出
@@ -104,9 +107,9 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
                 } 
                 
                 if (k < numsSize -1) {
-                   do {
+                    do {
                        k ++;
-                   } while ((k < numsSize -1) && (sortnums[k] == sortnums[k - 1]));
+                    } while ((k < numsSize -1) && (sortnums[k] == sortnums[k - 1]));
                 
                     if (sortnums[k] == sortnums[k -1 ]) {
                         break;
@@ -114,18 +117,25 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
                 } 
             } else if (value > 0 ) {
                 if (j > 0 ) {
-                    j -- ;
-                    if (equal) {
-                        if (sortnums[j] != sortnums [i]) {
+                    do {
+                        j--;
+                    } while ((sortnums[j] == sortnums[j+1]) && (j >0));
+                    
+                    if (sortnums[j] != sortnums [j+1]) {
+                        if (equal) {
                             break;
                         }
+                    } else {
+                        break;
                     }
-                 } else {
+                } else {
                     break; //not possible to find a small value to get 0
                 }
             } else {
                 if (k < (numsSize - 1)) {
-                    k ++;
+                    do {
+                       k ++;
+                    } while ((k < numsSize -1) && (sortnums[k] == sortnums[k - 1]));
                 } else {
                     break;
                 }
