@@ -9,11 +9,12 @@
 bool is_paired(char a, char b) {
     return ((a == '(') && (b == ')') || 
             (a == '[') && (b == ']') ||
-            (a == '{') && (b == '}'));
+            (a == '{') && (b == '}'))? 
+            true: false;
 }
 
 bool is_left(char a) {
-    return (a=='(') || (a=='[') || (a=='{');
+    return ((a=='(') || (a=='[') || (a=='{'))?true:false;
 }
 
 bool isValid(char * s){
@@ -36,8 +37,9 @@ bool isValid(char * s){
                 return false;
             }
 
-            if (!is_paired(s[i], stack[stack_len - 1])) {
+            if (is_paired(stack[stack_len - 1], s[i])) {
                 stack_len --;
+            } else {
                 return false;
             }
         }
