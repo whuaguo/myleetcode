@@ -33,16 +33,18 @@ int longestValidParentheses(char * s){
     short zlen = 0;
     short idx;
 
-    for (idx = 0; idx < len; idx ++) {
-        if (IS_LEFT(idx) || (value<=0)) {
-            if (IS_LEFT(idx)) {
-                value ++;
-                pvalue[idx] = value;
-            } else {
-                pvalue[idx] = -1;
+    for (idx = 0; idx <= len; idx ++) {
+        if (IS_LEFT(idx) || (idx == len) ||(value<=0)) {
+            if (idx < len) {
+                if (IS_LEFT(idx)) {
+                    value ++;
+                    pvalue[idx] = value;
+                } else {
+                    pvalue[idx] = -1;
+                }
             }
 
-            //不管是'('或')'但value==-1，都代表一段完整括号的的结束，往后算一算长度
+            //不管是'('或')'但value==-1或结束，都代表一段完整括号的的结束，往后算一算长度
             if ((idx > 1) && IS_RIGHT(idx -1) && (pvalue[idx - 1] >= 0)) {
                 //往后找一个有配对的')’，算idx，和前面一个和他匹配的'('的idx之间的差
                 zlen = idx - pindex[idx -1];
@@ -71,14 +73,6 @@ int longestValidParentheses(char * s){
                 //前面没有合法的配对了，直接计入pindex
                 pindex [idx] = back_idx;
             }
-        }
-    }
-
-    idx --;
-    if ((idx >=1) && IS_RIGHT(idx) && (pvalue[idx] != -1)) {
-        zlen = idx - pindex[idx] + 1;
-        if (rmlen < zlen) {
-            rmlen = zlen;
         }
     }
 
