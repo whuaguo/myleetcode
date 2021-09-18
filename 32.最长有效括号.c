@@ -66,15 +66,12 @@ int longestValidParentheses(char * s){
             //从栈的头部取出压栈的序列号
             left_idx = pstack[stack_idx];
 
-            //前面没有合法的配对了，直接计入pleft_idx
-            if ((left_idx > 1) && (pleft_idx[left_idx - 1] > 0)) {
-                //如果当前序列号前一个字符也是')'，而且它有对应的'(',直接取它对应'('对应的序列号
-                pleft_idx[idx] = pleft_idx[left_idx - 1];
-            } else {
-                //记录当前')'对应'('的序列号(+1)
-                //+1可以区分pleft_idx里面存储的是一个有效的值，那些没有'('对应的存默认值0
-                pleft_idx[idx] = left_idx + 1;
-            }
+            //如果当前序列号配对字符前一个字符也是')'，而且它有配对字符,取配对字符序列号
+            //否则记录从栈中取出的配对字符序列号(+1)，
+            //    (+1)可以确认pleft_idx存储的是有效值，那些没有配对字符存储的是默认值0
+            pleft_idx[idx] = ((left_idx > 1) && (pleft_idx[left_idx - 1] > 0)) ?
+                        pleft_idx[left_idx - 1] : 
+                        left_idx + 1;
         }
     }
 
