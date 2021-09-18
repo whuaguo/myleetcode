@@ -31,10 +31,8 @@ int longestValidParentheses(char * s){
     }
 
     short rmlen = 0;
-    short zlen = 0;
-    short idx;
 
-    for (idx = 0; idx <= len; idx ++) {
+    for (short idx = 0; idx <= len; idx ++) {
         if ((idx == len) ||
             IS_LEFT(idx) ||  
             IS_RIGHT(idx) && (stack_idx == 0)) 
@@ -53,7 +51,7 @@ int longestValidParentheses(char * s){
             //不管是'('或')'但value==-1或结束，都代表一段完整括号的的结束，往后算一算长度
             if ((idx > 1) && (pleft_idx[idx - 1] > 0)) {
                 //往后找一个有配对的')’，算idx，和前面一个和他匹配的'('的idx之间的差
-                zlen = idx - pleft_idx[idx -1] + 1;
+                short zlen = idx - pleft_idx[idx -1] + 1;
                 if (rmlen < zlen) {
                     rmlen = zlen;
                 }
