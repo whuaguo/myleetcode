@@ -11,6 +11,7 @@
 
 int longestValidParentheses(char * s){
     short len = strlen(s);
+    short rmlen = 0;
     short stack_idx = 0;
     short *pstack;
     short *pleft_idx;
@@ -29,8 +30,6 @@ int longestValidParentheses(char * s){
         free(pstack);
         return 0;
     }
-
-    short rmlen = 0;
 
     for (short idx = 0; idx <= len; idx ++) {
         if ((idx == len) ||
