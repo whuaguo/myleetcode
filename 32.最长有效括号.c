@@ -7,15 +7,14 @@
 // @lc code=start
 
 int longestValidParentheses(char * s){
+    #define IS_LEFT(i)      (s[i] == '(')
+    #define IS_RIGHT(i)     (s[i] == ')')
+
     short len = strlen(s);
     short rmlen = 0;
     short stack_idx = 0;
     short *pstack;
     short *pleft_idx;
-
-
-    #define IS_LEFT(i)      (s[i] == '(')
-    #define IS_RIGHT(i)     (s[i] == ')')
 
     if (len < 2) {
         return 0;
