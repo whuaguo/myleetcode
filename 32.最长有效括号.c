@@ -51,7 +51,7 @@ int longestValidParentheses(char * s){
             }
 
             //不管是'('或')'但value==-1或结束，都代表一段完整括号的的结束，往后算一算长度
-            if ((idx > 1) && IS_RIGHT(idx -1) && (pleft_idx[idx - 1] > 0)) {
+            if ((idx > 1) && (pleft_idx[idx - 1] > 0)) {
                 //往后找一个有配对的')’，算idx，和前面一个和他匹配的'('的idx之间的差
                 zlen = idx - pleft_idx[idx -1] + 1;
                 if (rmlen < zlen) {
@@ -70,7 +70,7 @@ int longestValidParentheses(char * s){
             left_idx = pstack[stack_idx];
 
             //前面没有合法的配对了，直接计入pleft_idx
-            if ((left_idx > 1) && IS_RIGHT(left_idx - 1) && (pleft_idx[left_idx - 1] > 0)) {
+            if ((left_idx > 1) && (pleft_idx[left_idx - 1] > 0)) {
                 //如果当前序列号前一个字符也是')'，而且它有对应的'(',直接取它对应'('对应的序列号
                 pleft_idx[idx] = pleft_idx[left_idx - 1];
             } else {
