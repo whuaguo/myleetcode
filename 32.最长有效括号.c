@@ -10,7 +10,7 @@
 #define IS_RIGHT(i)     (s[i] == ')')
 
 int longestValidParentheses(char * s){
-    int len = strlen(s);
+    short len = strlen(s);
     short *pvalue;
     short *pindex;
 
