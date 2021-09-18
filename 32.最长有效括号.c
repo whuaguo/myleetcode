@@ -36,18 +36,15 @@ int longestValidParentheses(char * s){
             IS_LEFT(idx) ||  
             IS_RIGHT(idx) && (stack_idx == 0)) 
         {
-            //3种情况需要算一下是否有了最长匹配
+            if ((idx < len) && (IS_LEFT(idx))) {
+                //把 idx 压栈，对应的右括号可以直接取这个idx计算长度
+                pstack[stack_idx++] = idx; 
+            }
+
+            //下面3种情况需要算一下是否有了最长匹配
             //1. 左括号但右边是右括号
             //2. 字符串结尾
             //3. 右括号，但前面没有对应的左括号
-            if (idx < len) {
-                if (IS_LEFT(idx)) {
-                    //把 idx 压栈，对应的右括号可以直接取这个idx计算长度
-                    pstack[stack_idx++] = idx; 
-                }
-            }
-
-            //不管是'('或')'但value==-1或结束，都代表一段完整括号的的结束，往后算一算长度
             if ((idx > 1) && (pleft_idx[idx - 1] > 0)) {
                 //往后找一个有配对的')’，算idx，和前面一个和他匹配的'('的idx之间的差
                 short zlen = idx - pleft_idx[idx -1] + 1;
