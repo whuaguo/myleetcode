@@ -35,8 +35,8 @@ int longestValidParentheses(char * s){
     short idx;
 
     for (idx = 0; idx <= len; idx ++) {
-        if (IS_LEFT(idx) ||  
-            (idx == len) ||  
+        if ((idx == len) ||
+            IS_LEFT(idx) ||  
             IS_RIGHT(idx) && (stack_idx == 0)) 
         {
             //3种情况需要算一下是否有了最长匹配
