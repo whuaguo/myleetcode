@@ -21,7 +21,7 @@ int longestValidParentheses(char * s){
     int llen = 0;
 
     int max = 0;
-    int cmax = 0
+    int cmax = 0;
 
     for (int idx = 0; idx < len; idx ++) {
         if (s[idx] == '(') {
@@ -37,11 +37,6 @@ int longestValidParentheses(char * s){
                 if (value == 0) {
                     zlen += mlen;
                     mlen = 0;
-                } else {
-                    //已经有配对，更新一下最大值
-                    if (mlen - value > zlen) {
-                        zlen = mlen - value;
-                    }
                 }
             } else {
                 if (rmlen < zlen) {
