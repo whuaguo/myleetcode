@@ -17,7 +17,7 @@ unsigned short exist_flag[3][9] = {0};
 unsigned char exist_count[3][9] = {0};
 
 //判断key是否能放入数独表内，通过判断横纵、九宫格内的数字bit-map快速判断
-#define isValueExist(i, j, key) \
+#define isKeyExist(i, j, key) \
     ((exist_flag[0][i] | exist_flag[1][j] | exist_flag[2][nums2idx(i,j)]) & \
     (1 << (key - '1')))
 
@@ -59,29 +59,16 @@ bool initExistFlag(char **board, int boardSize, int* boardColSize) {
         }
 
         for (short j = 0; j < 9; j++) {
-            char value = board[i][j]; 
-            if ( value == '.') {
+            char key = board[i][j]; 
+            if ( key == '.') {
                 continue;
             } 
             
-            if ((value <'1') || (value >'9')) {
+            if ((key <'1') || (key >'9') || isKeyExist(i, j, key)) {
                 return false;
+            } else {
+                addSoduFlag(i, j, key);
             }
-            
-            short flag_bit = (1 << (value - '1'));
-
-            if ((exist_flag[0][i] & flag_bit) ||
-                (exist_flag[1][j] & flag_bit) ||
-                (exist_flag[2][nums2idx(i,j)] & flag_bit)) {
-                return false;
-            }
-
-            exist_flag[0][i] |= flag_bit;
-            exist_flag[1][j] |= flag_bit;
-            exist_flag[2][nums2idx(i,j)] |= flag_bit;
-            exist_count[0][i] ++;
-            exist_count[1][j] ++;
-            exist_count[2][nums2idx(i,j)] ++;
         }
     }
 
@@ -151,7 +138,7 @@ bool findSudoku(char** board) {
                 //第一个非.的位置
                 for (char key = '1'; key <= '9'; key ++) {
                     //依次尝试每种可能
-                    if (isValueExist(i, j, key)) {
+                    if (isKeyExist(i, j, key)) {
                         continue;
                     }
                     
