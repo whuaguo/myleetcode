@@ -10,44 +10,47 @@
 #define num2j(i) ((i < 3) ? 0 : ((i < 6)? 1 : 2))
 //通过横纵坐标得到九宫格序列号
 #define nums2idx(i,j) (num2i(i) +num2j(j))
-
 //横纵、九宫格里已经具备的数字bit-map，0-横，1-纵，2-九宫格
-unsigned short exist_flag[3][9] = {0};
-//横纵、九宫格里已经具备的数字数目，0-横，1-纵，2-九宫格
-unsigned char exist_count[3][9] = {0};
+
+struct sodu_flag_count {
+    unsigned short exist_flag:12;
+    unsigned short exist_count:4;
+};
+
+static struct sodu_flag_count sudo_status[3][9] = {0};
 
 //判断key是否能放入数独表内，通过判断横纵、九宫格内的数字bit-map快速判断
-#define isKeyExist(i, j, key) \
-    ((exist_flag[0][i] | exist_flag[1][j] | exist_flag[2][nums2idx(i,j)]) & \
-    (1 << (key - '1')))
-
+#define isKeyExist(i, j, key) (\
+    (1 << (key - '1')) & \
+    (sudo_status[0][i].exist_flag | \
+     sudo_status[1][j].exist_flag | \
+     sudo_status[2][nums2idx(i,j)].exist_flag))
 
 //把key放入数独表内，需要添加数字bit-map并修改数字数目
-void addSoduFlag(short i, short j, char key) {
+static void addSoduFlag(short i, short j, char key) {
     unsigned short flag_bit = (1 << (key - '1'));
-    exist_flag[0][i] |= flag_bit; 
-    exist_flag[1][j] |= flag_bit; 
-    exist_flag[2][nums2idx(i,j)] |= flag_bit; 
-    exist_count[0][i] ++;
-    exist_count[1][j] ++;
-    exist_count[2][nums2idx(i,j)] ++;
+    sudo_status[0][i].exist_flag |= flag_bit; 
+    sudo_status[1][j].exist_flag |= flag_bit; 
+    sudo_status[2][nums2idx(i,j)].exist_flag |= flag_bit; 
+    sudo_status[0][i].exist_count ++;
+    sudo_status[1][j].exist_count ++;
+    sudo_status[2][nums2idx(i,j)].exist_count ++;
 }
 
 //把key从数独表中移除，需要清除数字bit-map并修改数字数目
-void removeSoduFlag(short i, short j, char key) {
+static void removeSoduFlag(short i, short j, char key) {
     unsigned short flag_bit = (1 << (key - '1'));
-    exist_flag[0][i] ^= flag_bit; 
-    exist_flag[1][j] ^= flag_bit; 
-    exist_flag[2][nums2idx(i,j)] ^= flag_bit; 
-    exist_count[0][i] --;
-    exist_count[1][j] --;
-    exist_count[2][nums2idx(i,j)] --;
+    sudo_status[0][i].exist_flag ^= flag_bit; 
+    sudo_status[1][j].exist_flag ^= flag_bit; 
+    sudo_status[2][nums2idx(i,j)].exist_flag ^= flag_bit; 
+    sudo_status[0][i].exist_count --;
+    sudo_status[1][j].exist_count --;
+    sudo_status[2][nums2idx(i,j)].exist_count --;
 } 
 
 //初始化bit-map和数字数目表，顺便检查九宫格是否合法
-bool initExistFlag(char **board, int boardSize, int* boardColSize) {
-    memset(exist_flag, 0, sizeof(unsigned short) * 3 * 9);
-    memset(exist_count, 0, sizeof(unsigned char) * 3 * 9);
+static bool initExistFlag(char **board, int boardSize, int* boardColSize) {
+    memset(sudo_status, 0, sizeof(struct sodu_flag_count) * 3 * 9);
 
     if (boardSize != 9) {
         return false;
@@ -76,13 +79,13 @@ bool initExistFlag(char **board, int boardSize, int* boardColSize) {
 }
 
 //在横纵、九宫格中找一个已经填入数字最多的维度
-unsigned char findMax(char** board, unsigned char *idx1, unsigned char *idx2) {
+static unsigned char findMax(char** board, unsigned char *idx1, unsigned char *idx2) {
     unsigned char max = 0;
     for (int i = 0; i < 3; i ++) {
         for (int j = 0; j < 9; j++) {
             //如果数字数目已经为9，代表已经填满，需要跳过
-            if ( (exist_count[i][j]!=9) && (exist_count[i][j] > max)) {
-                max = exist_count[i][j];
+            if ( (sudo_status[i][j].exist_count!=9) && (sudo_status[i][j].exist_count > max)) {
+                max = sudo_status[i][j].exist_count;
                 *idx1 = i;
                 *idx2 = j;
 
@@ -98,7 +101,7 @@ unsigned char findMax(char** board, unsigned char *idx1, unsigned char *idx2) {
 }
 
 //循环递归查找答案
-bool findSudoku(char** board) {
+static bool findSudoku(char** board) {
     unsigned char idx1;
     unsigned char idx2;
 
