@@ -32,6 +32,9 @@ static void addSoduFlag(short i, short j, char key) {
     sudo_status[0][i].exist_flag |= flag_bit; 
     sudo_status[1][j].exist_flag |= flag_bit; 
     sudo_status[2][nums2idx(i,j)].exist_flag |= flag_bit; 
+}
+
+static void addSoduCount(short i, short j) {
     sudo_status[0][i].exist_count ++;
     sudo_status[1][j].exist_count ++;
     sudo_status[2][nums2idx(i,j)].exist_count ++;
@@ -43,6 +46,10 @@ static void removeSoduFlag(short i, short j, char key) {
     sudo_status[0][i].exist_flag ^= flag_bit; 
     sudo_status[1][j].exist_flag ^= flag_bit; 
     sudo_status[2][nums2idx(i,j)].exist_flag ^= flag_bit; 
+} 
+
+//把key从数独表中移除，需要清除数字bit-map并修改数字数目
+static void removeSoduCount(short i, short j) {
     sudo_status[0][i].exist_count --;
     sudo_status[1][j].exist_count --;
     sudo_status[2][nums2idx(i,j)].exist_count --;
@@ -71,6 +78,7 @@ static bool initExistFlag(char **board, int boardSize, int* boardColSize) {
                 return false;
             } else {
                 addSoduFlag(i, j, key);
+                addSoduCount(i, j);
             }
         }
     }
@@ -139,21 +147,23 @@ static bool findSudoku(char** board) {
         for (int j = j_base; j < j_base + j_loop; j++) {
             if (board[i][j] == '.') {
                 //第一个非.的位置
+                addSoduCount(i,j);
                 for (char key = '1'; key <= '9'; key ++) {
                     //依次尝试每种可能
                     if (isKeyExist(i, j, key)) {
                         continue;
                     }
                     
-                    addSoduFlag(i,j,key);
                     board[i][j] = key;
+                    addSoduFlag(i,j,key);
                     if (findSudoku(board)) {
                         return true;
                     } else {
                         removeSoduFlag(i,j,key);
-                        board[i][j] = '.';
                     } 
                 } 
+                board[i][j] = '.';
+                removeSoduCount(i,j);
                 return false;
             }
         }
