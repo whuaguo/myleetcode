@@ -22,11 +22,11 @@ char * minWindow(char * s, char * t){
     int rp = 0;                     //滑动窗口右边指针
     int start = 0;                  //满足条件的字符串开始位置
     int wlen = 0x7fffffff;          //满足条件的字符最小长度
-    int len1 = strlen(s);
-    int len2 = strlen(t);
+    int slen = strlen(s);
+    int tlen = strlen(t);
 
     //统计t中每个字符的个数
-    for (int i = 0; i < len2; i ++) {
+    for (int i = 0; i < tlen; i ++) {
         TC(t[i])++;
     }
 
@@ -37,7 +37,7 @@ char * minWindow(char * s, char * t){
         }
     }
 
-    while (rp < len1) {
+    while (rp < slen) {
         char rc = s[rp++];
         //无效字符，直接跳过
         if (0 == TC(rc)) {
@@ -69,7 +69,7 @@ char * minWindow(char * s, char * t){
                 //如果刚刚减少到门槛下，项目计数-1
                 if (SC(lc) < TC(lc)) {
                     mtcc --;
-                    continue;
+                    break;
                 }
             }
 
