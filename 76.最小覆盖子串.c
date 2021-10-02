@@ -39,18 +39,11 @@ char * minWindow(char * s, char * t){
 
     while (rp < slen) {
         char rc = s[rp++];
-        //无效字符，直接跳过
-        if (0 == TC(rc)) {
-            continue;
-        }
-
-        //计数，如果计数不是刚刚跨过目的，继续
-        if (++SC(rc) != TC(rc)) {
-            continue;
-        }
-
-        //刚刚跨过，满足项目+1，并比较是否所有项目都满足，否则继续
-        if (++mtcc != tcc) {
+        
+        if ((0 == TC(rc)) ||        /*无效字符*/ 
+            (++SC(rc) != TC(rc)) || /*有效，但计数之后还不满足对应字符目标*/
+            (++mtcc != tcc))        /*字符满足目标，但总目标不满足*/
+        {    
             continue;
         }
 
@@ -58,22 +51,15 @@ char * minWindow(char * s, char * t){
         SET_WIN;
 
         //开始移动左边指针，看看能否缩小范围
-        while ((mtcc == tcc) && (lp < rp)) {
-            char lc = s[lp++];
+        for (;mtcc == tcc; lp++) {
+            char lc = s[lp];
 
-            if (TC(lc)) {
-                //有效字符，计数-1
-                SC(lc) --;
+            if (TC(lc) && --SC(lc) < TC(lc)) {
+                mtcc--;
 
-                //如果刚刚减少到门槛下，项目计数-1
-                if (SC(lc) < TC(lc)) {
-                    mtcc --;
-                    break;
-                }
+                //不管是非有效字符，或有效字符但依然满足条件，判断长度
+                SET_WIN;
             }
-
-            //不管是非有效字符，或有效字符但依然满足条件，判断长度
-            SET_WIN;
         }
     }
 
@@ -85,7 +71,7 @@ char * minWindow(char * s, char * t){
     if (NULL == retstr) {
         return NULL;
     }
-    
+
     if (wlen > 0) {
         memcpy(retstr, s + start, wlen);
     }
