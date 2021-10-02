@@ -6,12 +6,12 @@
 
 // @lc code=start
 
-#define SC(c)           sc[c - 'A']
-#define TC(c)           tc[c - 'A']
-#define SET_NEW_START   if (wlen > rp -lp) {\
-                            wlen = rp - lp; \
-                            start = lp; \
-                        }
+#define SC(c)   sc[c - 'A']
+#define TC(c)   tc[c - 'A']
+#define SET_WIN if (wlen > rp -lp) {\
+                    wlen = rp - lp; \
+                    start = lp; \
+                }
 
 char * minWindow(char * s, char * t){
     short tc['z' - 'A' + 1] = {0};  //记录每个目录字符的个数    
@@ -45,8 +45,7 @@ char * minWindow(char * s, char * t){
         }
 
         //计数，如果计数不是刚刚跨过目的，继续
-        SC(rc)++;
-        if (SC(rc) != TC(rc)) {
+        if (++SC(rc) != TC(rc)) {
             continue;
         }
 
@@ -56,7 +55,7 @@ char * minWindow(char * s, char * t){
         }
 
         //满足条件了，记住起始地址，并记住当前的字符串长度
-        SET_NEW_START;
+        SET_WIN;
 
         //开始移动左边指针，看看能否缩小范围
         while ((mtcc == tcc) && (lp < rp)) {
@@ -74,7 +73,7 @@ char * minWindow(char * s, char * t){
             }
 
             //不管是非有效字符，或有效字符但依然满足条件，判断长度
-            SET_NEW_START;
+            SET_WIN;
         }
     }
 
@@ -85,7 +84,9 @@ char * minWindow(char * s, char * t){
     char * retstr = malloc(wlen + 1);
     if (NULL == retstr) {
         return NULL;
-    } else if (wlen > 0) {
+    }
+    
+    if (wlen > 0) {
         memcpy(retstr, s + start, wlen);
     }
     retstr[wlen] = 0;
