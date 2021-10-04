@@ -10,31 +10,28 @@
 int removeDuplicates(int* nums, int numsSize){
     int right = 1;
     int left = 0;  
-    bool dupped = false;
-    bool ever_removed = false;
+    bool dupped;
 
+    if (numsSize < 3) {
+        return numsSize;
+    }
 
     while (right < numsSize) {
-        if (nums[right] == nums[left]) {
-            if (dupped) {
-                //已经有dup，只需要移动右边指针即可，总数--
-                right++;
-                ever_removed = true;
-                continue;
-            }
-            //dup标记设置
-            dupped = true;
-        } else {
-            //dup标记复位
-            dupped = false;
-        } 
-
+        dupped = (nums[right] == nums[left]);
+        
         //移动左右指针，如果需要移动数组内的值
         left++;
-        if (ever_removed) {
-            nums[left] =nums[right];
+        if (left != right) {
+            nums[left] = nums[right];
         }
         right++;
+
+        if (dupped) {
+            //相同，移动有指针知道不相等
+            while ((right < numsSize) && (nums[right] == nums[left])) {
+                right ++;
+            }
+        }
     }
 
     return left + 1;
