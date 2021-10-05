@@ -6,34 +6,40 @@
 
 // @lc code=start
 
-int largestRectangleArea(int* heights, int heightsSize){
-    int lLessIdx[200];
-    int rLessIdx[200];
+short largestRectangleArea(short* heights, short heightsSize){
+    short lLessIdx[200];
+    short rLessIdx[200];
 
     // 记录每个柱子 左边第一个小于该柱子的下标
     lLessIdx[0] = -1; // 注意这里初始化，防止下面while死循环
     for (int i = 1; i < heightsSize; i++) {
-        int t = i - 1;
+        short h = heights[i];
+        if (h) {
+            int t = i - 1;
         
-        // 这里不是用if，而是不断向左寻找的过程
-        while (t >= 0 && heights[t] >= heights[i]) {
-            t = lLessIdx[t];
-        }
+            // 这里不是用if，而是不断向左寻找的过程
+            while (t >= 0 && heights[t] >= h) {
+                t = lLessIdx[t];
+            }
 
-        lLessIdx[i] = t;
+            lLessIdx[i] = t;
+        }
     }
 
     // 记录每个柱子 右边第一个小于该柱子的下标
     rLessIdx[heightsSize - 1] = heightsSize; // 注意这里初始化，防止下面while死循环
     for (int i = heightsSize - 2; i >= 0; i--) {
-        int t = i + 1;
-        
-        // 这里不是用if，而是不断向右寻找的过程
-        while (t < heightsSize && heights[t] >= heights[i]) {
-            t = rLessIdx[t];
-        }
+        short h = heights[i];
+        if (h) {
+            int t = i + 1;
 
-        rLessIdx[i] = t;
+            // 这里不是用if，而是不断向右寻找的过程
+            while (t < heightsSize && heights[t] >= h) {
+                t = rLessIdx[t];
+            }
+
+            rLessIdx[i] = t;
+        }
     }
 
     // 求和
@@ -47,11 +53,12 @@ int largestRectangleArea(int* heights, int heightsSize){
 }
 
 int maximalRectangle(char** matrix, int matrixSize, int* matrixColSize){
-    int heights[200][200] = {0};
+    short heights[200][200] = {0};
     int ret = 0;
 
     for (int i = 0; i < matrixSize; i++) {
-        for (int j = 0; j < matrixColSize[i]; j++) {
+        short col = matrixColSize[0];
+        for (int j = 0; j < col; j++) {
             if (matrix[i][j] == '1') {
                 heights[i][j] = 1;
                 
@@ -61,7 +68,7 @@ int maximalRectangle(char** matrix, int matrixSize, int* matrixColSize){
             }
         }
 
-        int max = largestRectangleArea(heights[i], matrixColSize[i]);
+        int max = largestRectangleArea(heights[i], col);
 
         if (max > ret) {
             ret = max;
