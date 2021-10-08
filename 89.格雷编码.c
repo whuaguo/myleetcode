@@ -13,11 +13,9 @@
 int* grayCode(int n, int* returnSize){
     int *ret;
     int count;
-    int baseCount;
 
-    count = 1 << n;
-    *returnSize = count;
-    ret = malloc(sizeof(int) * count);
+    *returnSize = 1 << n;
+    ret = malloc(*returnSize * sizeof(int));
     if (NULL == ret) {
         return NULL;
     }
@@ -28,15 +26,13 @@ int* grayCode(int n, int* returnSize){
     }
 
     //n的格雷码前面n-1的格雷码，后面是n-1的格雷码反序中的每一个码|1<<n
-    count  = 1;
-    baseCount = 1;
+    count = 1;
     for (int i = 0; i < n; i ++) {
-        int preCount = baseCount;
+        int preCount = count;
+        int base = count;
         while (preCount > 0) {
-            ret[count++] = ret[--preCount] | baseCount;
+            ret[count++] = ret[--preCount] | base;
         }
-
-        baseCount = baseCount << 1;
     }
 
     return ret;
