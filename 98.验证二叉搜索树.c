@@ -14,43 +14,16 @@
  * };
  */
 
-bool getBSTmm(struct TreeNode* root, int *min, int*max) {
-    if (root) {
-        bool ret;
-
-        if (root->left) {
-            int lmin;
-            int lmax;
-            ret = getBSTmm(root->left, &lmin, &lmax);
-            if ((ret == false) || (lmax >= root->val) ) {
-                return false;
-            }
-            *min = lmin;
-        } else { 
-            *min = root->val;
-        }
-
-        if (root->right) {
-            int rmin;
-            int rmax;
-            ret = getBSTmm(root->right, &rmin, &rmax);
-            if ((ret == false) || (rmin <= root->val) ) {
-                return false;
-            }
-
-            *max = rmax;
-        } else {
-            *max = root->val;
-        }
-    }
-
-    return true;
+bool isBSTinRange(struct TreeNode* root, long min, long max) {
+    return  root ? 
+            ((root->val < max) && (root->val > min) && 
+             (root->left ? isBSTinRange(root->left, min, root->val) : true) &&
+             (root->right? isBSTinRange(root->right, root->val, max): true)):
+        true;
 }
 
 bool isValidBST(struct TreeNode* root){
-    int min, max;
-
-    return getBSTmm(root, &min, &max);
+    return isBSTinRange(root, 0x8000000000000000, 0x7fffffffffffffff);
 }
 // @lc code=end
 
