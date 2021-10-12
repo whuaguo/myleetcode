@@ -14,9 +14,7 @@
  * };
  */
 
-int maxv = 0x80000000;
-
-int maxLinePathSum(struct TreeNode* root){
+int maxLinePathSum(struct TreeNode* root, int *maxv){
     if (!root) {
         return 0;
     }
@@ -25,15 +23,15 @@ int maxLinePathSum(struct TreeNode* root){
         return root->val;
     }
 
-    int lpath = -2000;
-    int rpath = -2000;
+    int lpath = 0x80000000;
+    int rpath = 0x80000000;
 
     if (root->left) {
-        lpath = maxLinePathSum(root->left);
+        lpath = maxLinePathSum(root->left, maxv);
     }
     
     if (root->right) {
-        rpath = maxLinePathSum(root->right);
+        rpath = maxLinePathSum(root->right, maxv);
     }
 
     //取子树的较大值
@@ -43,21 +41,22 @@ int maxLinePathSum(struct TreeNode* root){
     int ret = root->val + ((childpath > 0)?childpath:0);
 
     //不往上回溯了，那么取V形结构，单节点的最大值
-    int maxNodev = root->val + lpath + rpath;
+    int maxNodev = root->val + (lpath>0?lpath:0) + (rpath>0?rpath:0);
     if (childpath > maxNodev) {
         maxNodev = childpath;
     }
 
-    if (maxNodev > maxv) {
-        maxv = maxNodev;
+    if (maxNodev > *maxv) {
+        *maxv = maxNodev;
     }
 
     return ret;
 }
 
 int maxPathSum(struct TreeNode* root){
-    maxv = -2000;
-    int maxLinePath = maxLinePathSum(root);
+    int maxv = 0x80000000;
+
+    int maxLinePath = maxLinePathSum(root, &maxv);
 
     return (maxLinePath > maxv) ? maxLinePath : maxv;
 }
