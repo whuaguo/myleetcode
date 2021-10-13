@@ -27,27 +27,28 @@ int strDiffs(char * s1, char * s2) {
 }
 
 int ladderLength(char * beginWord, char * endWord, char ** wordList, int wordListSize){
-    int dis[5000] = {0};
+    int nextToEnd[5000] = {[0...4999] = -1 };
     int idxs1[1000] = {0};
     int idxs2[1000] = {0};
     int *idxs = idxs1;
     int *expandIdxs = idxs2;
     int idxsCount = 0;
-    bool endInList = false;
     int depth = 0;
 
+    //nextToEnd[],里面存放wordList里面向endword变化的下一个变种
+    //设定endword放在wordList[wordListSize]，beginword的下一个变种可放在一个全局变量。
     for (int idx = 0; idx < wordListSize; idx++) {
         int diffs = strDiffs(endWord, wordList[idx]);
         if (1 == diffs ) {
-            dis[idx] = 1;
+            nextToEnd[idx] = wordListSize; 
             idxs[idxsCount++] = idx;
         } else if (0 == diffs) {
-            endInList = true;
-            dis[idx] = 1;
+            nextToEnd[idx] = -1; //-1代表就是终点endword
+            nextToEnd[wordListSize] = idx;
         }
     }
 
-    if (!endInList) {
+    if (!nextToEnd[wordListSize]) {
         return 0;
     } 
 
@@ -69,12 +70,12 @@ int ladderLength(char * beginWord, char * endWord, char ** wordList, int wordLis
             }
 
             for (int i = 0; i < wordListSize; i++) {
-                if (dis[i]) {
+                if (nextToEnd[i]) {
                     continue;
                 } 
 
                 if (1 == strDiffs(wordList[sidx], wordList[i])) {
-                    dis[i] = depth;
+                    nextToEnd[i] = sidx;
                     expandIdxs[expandCount++] = i;
                 }
             }
