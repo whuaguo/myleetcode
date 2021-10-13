@@ -27,23 +27,23 @@ int strDiffs(char * s1, char * s2) {
 }
 
 int ladderLength(char * beginWord, char * endWord, char ** wordList, int wordListSize){
-    int dis[6000] = {0};
-    int idxs1[6000] = {0};
-    int idxs2[6000] = {0};
+    int dis[5000] = {0};
+    int idxs1[1000] = {0};
+    int idxs2[1000] = {0};
     int *idxs = idxs1;
     int *expandIdxs = idxs2;
     int idxsCount = 0;
     bool endInList = false;
     int depth = 0;
 
-    for (int i = 0; i < wordListSize; i++) {
-        int diffs = strDiffs(endWord, wordList[i]);
+    for (int idx = 0; idx < wordListSize; idx++) {
+        int diffs = strDiffs(endWord, wordList[idx]);
         if (1 == diffs ) {
-            dis[i] = 1;
-            idxs[idxsCount++] = i;
+            dis[idx] = 1;
+            idxs[idxsCount++] = idx;
         } else if (0 == diffs) {
             endInList = true;
-            dis[i] = 1;
+            dis[idx] = 1;
         }
     }
 
