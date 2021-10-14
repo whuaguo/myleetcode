@@ -87,15 +87,12 @@ int ladderLength(char * beginWord, char * endWord, char ** wordList, int wordLis
             char *targetWord = idx2word((*idxs)[idx]);
 
             for (int i = 0; i < wordListSize; i++) {
-                if (INVALID_IDX != paths[i]) {
-                    continue;
-                } 
-
-                int diffs = strDiffs(targetWord, wordList[i]); 
-                if (1 == diffs) {
+                if ((INVALID_IDX == paths[i]) && 
+                    (1 == strDiffs(targetWord, wordList[i]))){
                     if (INVALID_IDX != rpaths[i]) {
                         return edepth + sdepth;
                     }
+
                     paths[i] = (*idxs)[idx];
                     expandIdxs[expandCount++] = i;
                 }
@@ -106,10 +103,7 @@ int ladderLength(char * beginWord, char * endWord, char ** wordList, int wordLis
         expandIdxs = *idxs;
         *idxs = buffer;
         *idxsCount = expandCount;
-
-        if (expandCount) {
-            (*depth)++;
-        }
+        (*depth)++;
     }
 
     return 0;
