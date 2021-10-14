@@ -66,9 +66,10 @@ struct Node *cloneGraph(struct Node *s) {
 
     for (int idx = 0; idx < allNodeNum; idx++) {
         struct Node * node = newNodeList[idx];
+        struct Node ** allNeighbors = allNodeList[idx]->neighbors;
 
         for (int i = 0; i < allNodeList[idx]->numNeighbors; i++) {
-            node->neighbors[i] = newvalue2node[allNodeList[idx]->neighbors[i]->val];
+            node->neighbors[i] = newvalue2node[allNeighbors[i]->val];
         }
     }
 
