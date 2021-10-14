@@ -20,11 +20,11 @@ struct Node *cloneGraph(struct Node *s) {
     }
 
     struct Node* allNodeList[300] = {0};
-    struct Node* value2node[300] = {0};
+    int value2idx[300] = {0};
 	int allNodeNum = 1;
     int levelCount = 1;
     allNodeList[0] = s;
-    value2node[s->val] = s;
+    value2idx[s->val] = 1;
 
     while (levelCount) {
         int base = allNodeNum - levelCount;
@@ -34,12 +34,12 @@ struct Node *cloneGraph(struct Node *s) {
             struct Node* p = allNodeList[base++];
             for (int j = 0; j < p->numNeighbors; j++ ) {
                 struct Node *node = p->neighbors[j]; 
-                if (value2node[node->val]) {
+                if (value2idx[node->val]) {
                     continue;
                 }
 
                 allNodeList[allNodeNum++] = node;
-                value2node[node->val] = node; 
+                value2idx[node->val] = allNodeNum; 
                 newLevelCount++;
             }
         }
@@ -48,28 +48,33 @@ struct Node *cloneGraph(struct Node *s) {
     }
 
     struct Node *newNodeList[300] = {0};
-    struct Node *newvalue2node[300] = {0};
+    int newvalue2idx[300] = {0};
     int newNodeNum = 0;
+    struct Node * cloneNode;
+    struct Node * newNode;
+
     for (int idx = 0; idx < allNodeNum; idx++) {
-        struct Node * cloneNode = allNodeList[idx];
-        
-        struct Node * newNode = malloc(sizeof(struct Node));
+        cloneNode = allNodeList[idx];
+
+        newNode = malloc(sizeof(struct Node));
         assert(newNode);
+
         newNode->val = cloneNode->val;
         newNode->numNeighbors = cloneNode->numNeighbors;
         newNode->neighbors = malloc(cloneNode->numNeighbors * (sizeof(struct Node*)));
         assert(newNode->neighbors);
 
         newNodeList[newNodeNum++] = newNode;
-        newvalue2node[newNode->val] = newNode;
+        newvalue2idx[newNode->val] = newNodeNum;
     }
 
     for (int idx = 0; idx < allNodeNum; idx++) {
         struct Node * node = newNodeList[idx];
         struct Node ** allNeighbors = allNodeList[idx]->neighbors;
+        int numNeighbors = node->numNeighbors;
 
-        for (int i = 0; i < allNodeList[idx]->numNeighbors; i++) {
-            node->neighbors[i] = newvalue2node[allNeighbors[i]->val];
+        for (int i = 0; i < numNeighbors; i++) {
+            node->neighbors[i] = newNodeList[newvalue2idx[allNeighbors[i]->val] - 1];
         }
     }
 
