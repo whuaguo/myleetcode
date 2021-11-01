@@ -8,9 +8,6 @@
 
 
 int minSubArrayLen(int target, int* nums, int numsSize){
-<<<<<<< HEAD
-
-=======
     int left = -1;
     int right = -1;
     int sum = 0;
@@ -41,7 +38,6 @@ int minSubArrayLen(int target, int* nums, int numsSize){
     }
 
     return 0;
->>>>>>> b9e17ed08f68eccf15d14565f758e023fbb7ed3d
 }
 // @lc code=end
 
