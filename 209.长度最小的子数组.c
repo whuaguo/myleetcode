@@ -8,7 +8,40 @@
 
 
 int minSubArrayLen(int target, int* nums, int numsSize){
+<<<<<<< HEAD
 
+=======
+    int left = -1;
+    int right = -1;
+    int sum = 0;
+    int min = 0x7fffffff;
+    
+    while (1) {
+        while (sum < target) {
+            right ++;
+            if (right < numsSize) {
+                sum += nums[right];
+            } else {
+                return (min == 0x7fffffff) ? 0: min;
+            }
+        }
+
+        if (min > (right - left)) {
+            min = right - left;
+        }
+
+        while (sum >= target) {
+            left++;
+            sum -= nums[left];
+
+            if ((min > (right - left)) && (sum >= target)) {
+                min = right - left;
+            }
+        }
+    }
+
+    return 0;
+>>>>>>> b9e17ed08f68eccf15d14565f758e023fbb7ed3d
 }
 // @lc code=end
 

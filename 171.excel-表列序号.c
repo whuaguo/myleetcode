@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * @lc app=leetcode.cn id=171 lang=c
  *
@@ -19,3 +20,26 @@ int titleToNumber(char * columnTitle){
 }
 // @lc code=end
 
+=======
+/*
+ * @lc app=leetcode.cn id=171 lang=c
+ *
+ * [171] Excel 表列序号
+ */
+
+// @lc code=start
+
+
+int titleToNumber(char * columnTitle){
+    int ret = 0;
+    int len = strlen(columnTitle);
+
+    for (int idx = 0; idx < len; idx++) {
+        ret = ret * 26 + (columnTitle[idx] - 'A' + 1);
+    }
+
+    return ret;
+}
+// @lc code=end
+
+>>>>>>> b9e17ed08f68eccf15d14565f758e023fbb7ed3d
