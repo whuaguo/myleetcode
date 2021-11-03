@@ -6,8 +6,8 @@
 
 // @lc code=start
 
-int nextidx[10000] = {0};
-int nextidxdone[10000] = {0};
+int nextidx[5000] = {0};
+int nextidxdone[5000] = {0};
 int next[5000][100] = {0};
 int nextSize[5000] = {0};
 int nextidxSize = 0;
