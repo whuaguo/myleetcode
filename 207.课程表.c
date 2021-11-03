@@ -12,7 +12,7 @@ int next[5000][100] = {0};
 int nextSize[5000] = {0};
 int nextidxSize = 0;
 
-bool deepSearchAndMark(int** prerequisites, int val) {
+bool deepSearchAndMark(int val) {
     //取课程的配对集合
     int nextidxval = nextidx[val];
 
@@ -21,7 +21,7 @@ bool deepSearchAndMark(int** prerequisites, int val) {
         return true;
     }
 
-    //该课程已经正确结束，直接略过
+    //该课程正在找尾过程中，死循环，退出
     if (nextidxdone[val] == 1) {
         return false;
     }
@@ -36,7 +36,7 @@ bool deepSearchAndMark(int** prerequisites, int val) {
             continue;
         }
 
-        if (!deepSearchAndMark(prerequisites, nextval)) {
+        if (!deepSearchAndMark(nextval)) {
             return false;
         }
     }
@@ -67,8 +67,8 @@ bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* 
 
     //遍历配对集合，把每个课程对应的配对放入集合
     for (int idx = 0; idx < prerequisitesSize; idx++) {
-        int val = prerequisites[idx][0];
-        int nextVal = prerequisites[idx][1];
+        int val = prerequisites[idx][1];
+        int nextVal = prerequisites[idx][0];
         int nextidxval = nextidx[val]; 
 
         if (val == nextVal) {
@@ -96,7 +96,7 @@ bool canFinish(int numCourses, int** prerequisites, int prerequisitesSize, int* 
         }
 
         //有配对集合，循环查找是否有循环
-        if (!deepSearchAndMark(prerequisites, idx)) {
+        if (!deepSearchAndMark(idx)) {
             return false;
         }
     }

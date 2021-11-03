@@ -11,7 +11,6 @@
  * Note: The returned array must be malloced, assume caller calls free().
  */
 int nextidx[10000] = {0};
-int nextstackidx[]
 int nextidxdone[10000] = {0};
 int next[5000][100] = {0};
 int nextSize[5000] = {0};
@@ -19,7 +18,7 @@ int nextidxSize = 0;
 int stack[5000] = {0};
 int stackSize = 0;
 
-bool deepSearchAndMark(int** prerequisites, int val) {
+bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
     //取课程的配对集合
     int nextidxval = nextidx[val];
 
@@ -34,6 +33,9 @@ bool deepSearchAndMark(int** prerequisites, int val) {
     }
 
     nextidxdone[val] = 1;
+    localStack[*localStackSize] = val;
+    *localStackSize += 1;
+    
     //一次从配对集合中取出，往下循环查找
     for (int i = 0; i < nextSize[nextidxval]; i++) {
         int nextval = next[nextidxval][i];
@@ -43,7 +45,7 @@ bool deepSearchAndMark(int** prerequisites, int val) {
             continue;
         }
 
-        if (!deepSearchAndMark(prerequisites, nextval)) {
+        if (!deepSearchAndMark(nextval,localStack, localStackSize)) {
             return false;
         }
     }
@@ -74,8 +76,8 @@ int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* 
 
     //遍历配对集合，把每个课程对应的配对放入集合
     for (int idx = 0; idx < prerequisitesSize; idx++) {
-        int val = prerequisites[idx][0];
-        int nextVal = prerequisites[idx][1];
+        int val = prerequisites[idx][1];
+        int nextVal = prerequisites[idx][0];
         int nextidxval = nextidx[val]; 
 
         if (val == nextVal) {
@@ -109,8 +111,10 @@ int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* 
             continue;
         }
 
+        int localStack[5000] = {0};
+        int localStackSize = 0;
         //有配对集合，循环查找是否有循环
-        if (!deepSearchAndMark(prerequisites, idx)) {
+        if (!deepSearchAndMark(idx, localStack, &localStackSize)) {
             return NULL;
         }
     }
