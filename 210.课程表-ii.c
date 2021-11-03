@@ -12,11 +12,9 @@
  */
 int nextidx[2000] = {0};
 int nextidxdone[2000] = {0};
-int next[2000][2000] = {0};
+int next[2000][100] = {0};
 int nextSize[2000] = {0};
 int nextidxSize = 0;
-int stack[2000] = {0};
-int stackSize = 0;
 
 bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
     //取课程的配对集合
@@ -27,7 +25,7 @@ bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
         return true;
     }
 
-    //该课程已经正确结束，直接略过
+    //该课程正在循环中，loop，返回错误
     if (nextidxdone[val] == 1) {
         return false;
     }
@@ -35,8 +33,9 @@ bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
     nextidxdone[val] = 1;
     int totalSize = 0;
     int totalStack[2000] = {0};
-    //一次从配对集合中取出，往下循环查找
+    //依次从配对集合中取出，往下循环查找
     for (int i = 0; i < nextSize[nextidxval]; i++) {
+        //每次子序列都要放在前面
         int nextval = next[nextidxval][i];
         int astack[2000];
         int astackSize = 0;
@@ -105,44 +104,37 @@ int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* 
         }
     }
 
-    int totalSize = 0;
-    int totalStack[2000] = {0};
-    for (int idx = 0; idx < numCourses; idx++) {
-        //无配对集合，skip
-        if (nextidx[idx] == -1 || nextidx[idx] == -2) {
-            continue;
-        }
-
-        int localStack[2000] = {0};
-        int localStackSize = 0;
-        //有配对集合，循环查找是否有循环
-        if (!deepSearchAndMark(idx, localStack, &localStackSize)) {
-            *returnSize = 0;
-            return NULL;
-        }
-
-        memcpy(totalStack + (2000 - localStackSize - totalSize), localStack, localStackSize * sizeof(int));
-        totalSize += localStackSize;
-    }
-
-    int *ret = malloc(numCourses * sizeof(int));
-    int retSize = 0;
-    assert(ret);
+    int *totalStack = malloc(numCourses * sizeof(int));
+    assert(totalStack);
     *returnSize = numCourses;
 
+    int totalSize = 0;
+    for (int idx = 0; idx < numCourses; idx++) {
+        if (nextidx[idx] >= 0) {
+            int localStack[2000] = {0};
+            int localStackSize = 0;
+
+            //有配对集合，循环查找是否有循环
+            if (!deepSearchAndMark(idx, localStack, &localStackSize)) {
+                *returnSize = 0;
+                return NULL;
+            }
+
+            memcpy(totalStack + (numCourses - localStackSize - totalSize), localStack, localStackSize * sizeof(int));
+            totalSize += localStackSize;
+        }
+    }
+
+    totalSize = 0;
     //一次遍历所有课程value
     for (int idx = 0; idx < numCourses; idx++) {
         //无配对集合，先学了
         if (nextidx[idx] == -1) {
-            ret[retSize++] = idx;
+            totalStack[totalSize++] = idx;
         }
     }
 
-    if (totalSize) {
-        memcpy(ret+retSize, totalStack + 2000 - totalSize, totalSize*sizeof(int));
-    }
-
-    return ret;
+    return totalStack;
 }
 // @lc code=end
 
