@@ -22,23 +22,21 @@ int nextidxSize = 0;
 #define LOOP_DONE           2
 #define LOOP_NOT_START      0
 
-bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
+bool deepSearchAndMark(int val, int *stack, int *stackSize) {
     //取课程的配对集合
     int nextidxval = nextidx[val];
 
-    //该课程已经正确结束，直接略过
-    if (nextidxdone[val] == LOOP_DONE) {
-        return true;
-    }
+    switch (nextidxdone[val]){
+        case LOOP_DONE:
+            //该课程已经正确结束，直接略过
+            return true;
 
-    //该课程正在循环中，loop，返回错误
-    if (nextidxdone[val] == LOOP_IN) {
-        return false;
+        case LOOP_IN:
+            //该课程正在循环中，loop，返回错误
+            return false;
     }
 
     nextidxdone[val] = LOOP_IN;
-    int totalSize = 0;
-    int totalStack[2000] = {0};
     //依次从配对集合中取出，往下循环查找
     for (int i = 0; i < nextSize[nextidxval]; i++) {
         //每次子序列都要放在前面
@@ -46,26 +44,22 @@ bool deepSearchAndMark(int val, int *localStack, int *localStackSize) {
 
         //无配对集合，退出 
         if (nextidx[nextval] == NON_PRE_INIT ){
+            //没有前置课程了，直接把课程压入栈
             nextidx[nextval] = NON_PRE_TOUCHED;
-            memcpy(totalStack + (2000 - 1 - totalSize), &nextval, sizeof(int));
-            totalSize += 1;
+            *stackSize -= 1;
+            stack[*stackSize] = nextval;
             continue;
         } else if (nextidx[nextval] != NON_PRE_TOUCHED) {
-            int astack[2000];
-            int astackSize = 0;
-
-            if (!deepSearchAndMark(nextval,astack, &astackSize)) {
+            //继续深度搜索
+            if (!deepSearchAndMark(nextval,stack, stackSize)) {
                 return false;
             }
-
-            memcpy(totalStack + (2000 - astackSize - totalSize), astack, astackSize * sizeof(int));
-            totalSize += astackSize;
         }
     }
 
-    localStack[0] = val;
-    memcpy(localStack + 1, totalStack + 2000 - totalSize,sizeof(int) * totalSize);
-    *localStackSize = totalSize + 1;
+    //把课程压入栈
+    *stackSize -= 1;
+    stack[*stackSize] = val;
 
     //循环完毕，标记该课程无循环
     nextidxdone[val] = LOOP_DONE;
@@ -101,37 +95,32 @@ int* findOrder(int numCourses, int** prerequisites, int prerequisitesSize, int* 
         }
     }
 
-    int *totalStack = malloc(numCourses * sizeof(int));
-    assert(totalStack);
-    *returnSize = numCourses;
+    //分配出返回的课程列表
+    int *stack = malloc(numCourses * sizeof(int));
+    int stackSize = numCourses;
+    assert(stack);
 
-    int totalSize = 0;
     for (int idx = 0; idx < numCourses; idx++) {
         if (nextidx[idx] >= 0) {
-            int localStack[2000] = {0};
-            int localStackSize = 0;
-
-            //有配对集合，循环查找是否有循环
-            if (!deepSearchAndMark(idx, localStack, &localStackSize)) {
+            //有配对集合，深度搜索
+            if (!deepSearchAndMark(idx, stack, &stackSize)) {
                 *returnSize = 0;
                 return NULL;
             }
-
-            memcpy(totalStack + (numCourses - localStackSize - totalSize), localStack, localStackSize * sizeof(int));
-            totalSize += localStackSize;
         }
     }
 
-    totalSize = 0;
-    //一次遍历所有课程value
+    //依次遍历所有课程value，找到孤立的课程，加到返回列表中
     for (int idx = 0; idx < numCourses; idx++) {
         //无配对集合，先学了
         if (nextidx[idx] == NON_PRE_INIT) {
-            totalStack[totalSize++] = idx;
+            stack[--stackSize] = idx;
         }
     }
 
-    return totalStack;
+    *returnSize = numCourses;
+    return stack;
 }
+
 // @lc code=end
 
