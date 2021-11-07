@@ -9,8 +9,8 @@
 
 char * shortestPalindrome(char * s){
     int len = strlen(s);
-    int tlen = len << 1;
-    char *ts = malloc(tlen + 1);
+    int tlen = (len << 1) + 1;
+    char *ts = malloc(tlen);
     assert(ts);
 
     memcpy(ts, s, len);
@@ -20,13 +20,13 @@ char * shortestPalindrome(char * s){
     }
 
     //total char tlen + 1
-    short *next = malloc((tlen + 3)*sizeof(short));
+    short *next = malloc((tlen + 2)*sizeof(short));
     assert(next);
 
     int i = 1;
     int j = 0;
     next[1] = 0;
-    while (i <= tlen+1) {
+    while (i <= tlen) {
         if ((j == 0) || (ts[i - 1] == ts[j - 1])) {
             next[++i] = ++j;
         } else {
@@ -34,10 +34,10 @@ char * shortestPalindrome(char * s){
         }
     }
 
-    int rn = next[tlen+2] - 1;
+    int rn = next[tlen+1] - 1;
     free(next);
 
-    char * ret = malloc(tlen - rn + 1);
+    char * ret = malloc(tlen - rn);
     assert(ret);
     
     if (rn < len) {
