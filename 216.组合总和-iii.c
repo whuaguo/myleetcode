@@ -13,8 +13,7 @@
  * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
  */
 int** combinationSum3(int k, int n, int* returnSize, int** returnColumnSizes){
-
-
+int i;
 
 }
 // @lc code=end
