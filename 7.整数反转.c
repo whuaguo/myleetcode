@@ -5,44 +5,22 @@
  */
 
 // @lc code=start
-
+#define MAX_RET  (0x7fffffff / 10)
+#define MIN_RET  ((int)0x80000000 / 10)
 
 int reverse(int x){
-    int ax;
-    int plus;
-    int retx;
+    int ret = 0;
 
-    //特例
-    if (x== 0x80000000) {
-        return 0;
-    }
-
-    if (x < 0 ) {
-        ax = 0 - x;
-        plus = 0;
-    } else {
-        plus = 1;
-        ax = x;
-    }
-
-    retx = 0;
-    while (ax){
-        if (retx > (0x7fffffff / 10)){
-           return 0; 
+    while(x) {
+        if ((ret <= MAX_RET) && (ret >= MIN_RET)) {
+            ret = ret * 10 + x %10;
+            x = x/10;
         } else {
-            retx = retx * 10; 
-            
-            if (0x7fffffff - retx < ax % 10) {
-                return 0;
-            } else {
-                retx += ax % 10;
-            }
-
-            ax = ax / 10;
+            return 0;
         }
     }
 
-    return plus?retx:(0-retx);
+    return ret;
 }
 // @lc code=end
 
