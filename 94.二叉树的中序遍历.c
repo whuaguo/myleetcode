@@ -19,41 +19,37 @@
  * Note: The returned array must be malloced, assume caller calls free().
  */
 
-void addValToList(struct TreeNode* root, int* vals, int* size) {
-    if (root->left) {
-        addValToList(root->left, vals, size);
-    }
-
-    vals[*size] = root->val;
-    *size = *size + 1;
-
-    if (root->right) {
-        addValToList(root->right, vals, size);
-    }
-}
-
 int* inorderTraversal(struct TreeNode* root, int* returnSize){
-    int vals[101];
-    int size = 0;
-    int *ret;
-
     if (root == NULL) {
         *returnSize = 0;
         return NULL;
     }
 
-    addValToList(root, vals, &size);
+    int vals[101];
+    int retSize = 0;
+    struct TreeNode * stack[101];
+    int stackSize = 0;
+    struct TreeNode * ptr = root; 
 
-    *returnSize = size;
-    ret = malloc(size * sizeof(int));
-    if (ret == NULL) {
-        return NULL;
+    while (stackSize || ptr) {
+        while ((ptr == NULL) && stackSize) {
+            ptr = stack[--stackSize];
+            vals[retSize++] = ptr->val;
+            ptr = ptr->right;
+        }
+
+        while (ptr) {
+            stack[stackSize++] = ptr;
+            ptr = ptr->left;
+        }
     }
 
-    for (int i = 0; i < size; i++) {
-        ret[i] = vals[i];
-    }
+    int *ret = malloc(retSize * sizeof(int));
+    assert(ret != NULL);
 
+    memcpy(ret, vals, retSize * sizeof(int));
+    *returnSize = retSize;
+    
     return ret;
 }
 // @lc code=end
