@@ -37,4 +37,3 @@ int maxProfit(int k, int* prices, int pricesSize){
     return s[k -1];
 }
 // @lc code=end
-

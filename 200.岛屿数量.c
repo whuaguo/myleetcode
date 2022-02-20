@@ -38,4 +38,3 @@ int numIslands(char** grid, int gridSize, int* gridColSize){
     return islandNum;
 }
 // @lc code=end
-

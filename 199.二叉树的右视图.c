@@ -66,4 +66,3 @@ int* rightSideView(struct TreeNode* root, int* returnSize){
     return ret;
 }
 // @lc code=end
-

@@ -28,4 +28,3 @@ int findMin(int* nums, int numsSize){
     return nums[idx1];
 }
 // @lc code=end
-
