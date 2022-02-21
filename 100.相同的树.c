@@ -26,30 +26,29 @@ bool isSameTree(struct TreeNode* p, struct TreeNode* q){
 
     struct TreeNode * stack[10][2];
     int stackSize = 0;
-    struct TreeNode * ptrp = p;
-    struct TreeNode * ptrq = q; 
 
-    while (stackSize || ptrp) {
-        while ((ptrp == NULL) && stackSize) {
+    while (stackSize || p) {
+        while (!p && stackSize) {
             stackSize--;
-            ptrp = stack[stackSize][0];
-            ptrq = stack[stackSize][1];
-            ptrp = ptrp->right;
-            ptrq = ptrq->right;
+            p = stack[stackSize][0];
+            q = stack[stackSize][1];
+            p = p->right;
+            q = q->right;
         }
 
-        while (ptrp && ptrq) {
-            if (ptrp->val != ptrq->val) {
+        while (p && q) {
+            if (p->val != q->val) {
                 return false;
             }
-            stack[stackSize][0] = ptrp;
-            stack[stackSize][1] = ptrq;
+
+            stack[stackSize][0] = p;
+            stack[stackSize][1] = q;
             stackSize++;
-            ptrp = ptrp->left;
-            ptrq = ptrq->left;
+            p = p->left;
+            q = q->left;
         }
 
-        if (ptrq != ptrp) {
+        if (q != p) {
             return false;
         }
     }
