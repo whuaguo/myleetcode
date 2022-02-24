@@ -26,11 +26,7 @@ int** fourSum(int* nums, int numsSize, int target, int* returnSize, int** return
     }
 
     sortnums = malloc (sizeof(int)*numsSize);
-    if (sortnums == NULL) {
-        *returnSize = 0;
-        *returnColumnSizes = NULL;
-        return NULL;
-    }
+    assert(sortnums != NULL);
 
     int i1, i2, j, k;
     int value;
@@ -163,32 +159,13 @@ out:
     }
 
     int **ret = (int **)malloc( sizeof(int *)*answer_num);
-    if (ret == NULL) {
-        free(sortnums);
-        *returnSize = 0;
-        *returnColumnSizes = NULL;
-        return NULL;
-    }
+    assert(ret != NULL);
 
     int *rSizes = malloc(sizeof(int)*answer_num );
-    if (*rSizes == NULL) {
-        free(sortnums);
-        free(ret);
-        *returnSize = 0;
-        *returnColumnSizes = NULL;
-        return NULL;
-    }
+    assert(*rSizes != NULL);
 
     int *ret_ele = malloc (4*sizeof(int)*answer_num) ;
-    if (ret_ele == NULL) {
-        free(sortnums);
-        free(rSizes);
-        free(ret);
-        *returnSize = 0;
-        *returnColumnSizes = NULL;
-        return NULL;
-    }
-
+    assert(ret_ele != NULL);
 
     *returnSize = answer_num;
     *returnColumnSizes = rSizes;
