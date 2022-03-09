@@ -12,6 +12,8 @@
  * The sizes of the arrays are returned as *returnColumnSizes array.
  * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
  */
+//#define DEBUG 
+
 
 //用来做排序使用
 int intcompare(const void * a, const void * b)
@@ -30,10 +32,26 @@ void findAnswers(int* candidates, int candidatesSize, int target, int* returnSiz
 
         int new_sum = sum + num;
         if (new_sum < target) {
+            #ifdef DEBUG
+            printf("Try array start with: [");
+            for (int i = 0; i < answerIdx; i++) {
+                printf("%d,", (*answer)[i]);
+            }
+            printf("%d],\n", num);
+            #endif
+
             //王答案数组里面放一个可能的值，往后尝试
             (*answer)[answerIdx] = num;
             findAnswers(candidates,candidatesSize,target, returnSize, returnColumnSizes, answer, answerIdx + 1, new_sum, answers);
         } else if (new_sum == target){
+            #ifdef DEBUG
+            printf("Find a new answer: [");
+            for (int i = 0; i < answerIdx; i++) {
+                printf("%d,", (*answer)[i]);
+            }
+            printf("%d],\n", num);
+            #endif
+
             //已经找到答案，记住答案，重新分配一个答案数组供继续尝试
             (*answer)[answerIdx] = num;
             answers[*returnSize] = *answer;
@@ -46,6 +64,13 @@ void findAnswers(int* candidates, int candidatesSize, int target, int* returnSiz
             *returnSize += 1;
             return;
         } else {
+            #ifdef DEBUG
+            printf("Brk array start with: [");
+            for (int i = 0; i < answerIdx; i++) {
+                printf("%d,", (*answer)[i]);
+            }
+            printf("%d],\n", num);
+            #endif
             return;
         }
     }
