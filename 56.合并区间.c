@@ -12,6 +12,22 @@
  * The sizes of the arrays are returned as *returnColumnSizes array.
  * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
  */
+
+//用来做排序使用
+int intervalcompare(const void * a, const void * b)
+{
+    return (*(*(int **)a) - *(*(int **)b));
+}
+
+#define INTERVAL2LIST { \
+        int *interval = malloc(sizeof(int) * 2);\
+        assert(interval != NULL);\
+        interval[0] = interval_left;\
+        interval[1] = interval_right;\
+        (*returnColumnSizes)[retidx] = 2;\
+        ret[retidx++] = interval;\
+}
+
 int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* returnSize, int** returnColumnSizes){
     *returnSize = intervalsSize;
     if (intervalsSize <= 1) {
@@ -19,27 +35,31 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* retu
         return intervals;
     }
 
+    qsort(intervals, intervalsSize, sizeof(int *), intervalcompare);
+
     int **ret = malloc(sizeof(int *) * intervalsSize);
     *returnColumnSizes = malloc(sizeof(int) * intervalsSize);
     assert(ret != NULL);
     assert(*returnColumnSizes != NULL);
 
     int retidx = 0;
-    int idx_left = 0;
-    int idx_right = 1;
-    while (idx_right < intervalsSize) {
-        while ((intervals[idx_right][0] <= intervals[idx_right -1][1]) {
-            idx_right++;
-        } 
+    int interval_left = intervals[0][0];
+    int interval_right = intervals[0][1];
+    for (int idx = 1; idx < intervalsSize; idx++){
+        if (intervals[idx][0] <= interval_right) {
+            if (intervals[idx][1] > interval_right) {
+                interval_right = intervals[idx][1];
+            }
+            continue;
+        }
         
-        int *interval = malloc(sizeof(int) * 2);
-        assert(interval != NULL);
-
-        interval[0] = intervals[idx - 1][0];
-        interval[1] = intervals[idx - 1][1];
-        ret[retidx++] = interval;
+        INTERVAL2LIST;
+        interval_left = intervals[idx][0];
+        interval_right = intervals[idx][1];
     }
 
+    INTERVAL2LIST;
+    *returnSize = retidx;
     return ret;
 }
 // @lc code=end
