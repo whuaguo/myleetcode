@@ -22,8 +22,8 @@ int intervalcompare(const void * a, const void * b)
 #define INTERVAL2LIST { \
         int *interval = malloc(sizeof(int) * 2);\
         assert(interval != NULL);\
-        interval[0] = interval_left;\
-        interval[1] = interval_right;\
+        interval[0] = left;\
+        interval[1] = right;\
         (*returnColumnSizes)[retidx] = 2;\
         ret[retidx++] = interval;\
 }
@@ -43,19 +43,19 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* retu
     assert(*returnColumnSizes != NULL);
 
     int retidx = 0;
-    int interval_left = intervals[0][0];
-    int interval_right = intervals[0][1];
+    int left = intervals[0][0];
+    int right = intervals[0][1];
     for (int idx = 1; idx < intervalsSize; idx++){
-        if (intervals[idx][0] <= interval_right) {
-            if (intervals[idx][1] > interval_right) {
-                interval_right = intervals[idx][1];
+        if (intervals[idx][0] <= right) {
+            if (intervals[idx][1] > right) {
+                right = intervals[idx][1];
             }
             continue;
         }
         
         INTERVAL2LIST;
-        interval_left = intervals[idx][0];
-        interval_right = intervals[idx][1];
+        left = intervals[idx][0];
+        right = intervals[idx][1];
     }
 
     INTERVAL2LIST;
