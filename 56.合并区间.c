@@ -34,10 +34,11 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* retu
     assert(ret != NULL);
     assert(*returnColumnSizes != NULL);
 
+    qsort(intervals, intervalsSize, sizeof(int *), intervalcompare);
+
     int retidx = 0;
     int left = intervals[0][0];
     int right = intervals[0][1];
-    qsort(intervals, intervalsSize, sizeof(int *), intervalcompare);
     for (int idx = 1; idx < intervalsSize; idx++){
         if (intervals[idx][0] <= right) {
             if (intervals[idx][1] > right) {
