@@ -50,12 +50,11 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* retu
             if (intervals[idx][1] > right) {
                 right = intervals[idx][1];
             }
-            continue;
+        } else {
+            INTERVAL2LIST;
+            left = intervals[idx][0];
+            right = intervals[idx][1];
         }
-        
-        INTERVAL2LIST;
-        left = intervals[idx][0];
-        right = intervals[idx][1];
     }
 
     INTERVAL2LIST;
