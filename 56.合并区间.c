@@ -29,14 +29,6 @@ int intervalcompare(const void * a, const void * b)
 }
 
 int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* returnSize, int** returnColumnSizes){
-    *returnSize = intervalsSize;
-    if (intervalsSize <= 1) {
-        *returnColumnSizes = intervalsColSize;
-        return intervals;
-    }
-
-    qsort(intervals, intervalsSize, sizeof(int *), intervalcompare);
-
     int **ret = malloc(sizeof(int *) * intervalsSize);
     *returnColumnSizes = malloc(sizeof(int) * intervalsSize);
     assert(ret != NULL);
@@ -45,6 +37,7 @@ int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* retu
     int retidx = 0;
     int left = intervals[0][0];
     int right = intervals[0][1];
+    qsort(intervals, intervalsSize, sizeof(int *), intervalcompare);
     for (int idx = 1; idx < intervalsSize; idx++){
         if (intervals[idx][0] <= right) {
             if (intervals[idx][1] > right) {
