@@ -8,36 +8,20 @@
 
 
 int minPathSum(int** grid, int gridSize, int* gridColSize){
-    int *dp;
-    dp = malloc(sizeof(int) * gridSize * gridColSize[0]);
-    if (dp == NULL) {
-        return 0;
-    }
-
+    int dp[200][200];
     int i, j;
-    int num = 0; 
     for (i = 0; i < gridSize; i ++){
         for (j = 0; j < gridColSize[0]; j ++) {
-            int up;
-            int left;
-
-            dp[num] = grid[i][j];
-            
-            //非[0,0], 需要+min(up, left)
-            if (i!=0 || j!=0) {
-                up = (i > 0)? dp[num - gridColSize[0]] : 0x7fffffff;
-                left = (j > 0)? dp[num -1] : 0x7fffffff;
-                dp[num] += (left > up)? up : left;
+            dp[i][j] = grid[i][j];
+            if (i || j) {
+                int up = (i > 0)? dp[i-1][j] : 0x7fffffff;
+                int left = (j > 0)? dp[i][j-1] : 0x7fffffff;
+                dp[i][j] += ((left > up)? up : left);
             }
-            num ++;
         }
     }
 
-    //取得结果，释放内存
-    int ret = dp[num -1];
-    free(dp);
-
-    return ret;
+    return dp[gridSize - 1][gridColSize[0]-1];
 }
 // @lc code=end
 
