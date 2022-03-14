@@ -99,7 +99,7 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize){
     struct ListNode * tail = NULL;
 
     while (heapCount > 0) {
-        //从堆中取出第一个，挂到尾部
+        //从堆中取出第一个最小值，挂到尾部
         if (tail != NULL) {
             tail->next = heap[0];
         }
@@ -121,11 +121,11 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize){
                 break;
             }
         } else {
+            //对应队列往下移一个
             lists[heapidx[0]] = lists[heapidx[0]]->next;
             debugprint("Change heap head %d, idx:%d\n", heap[0]->val, heapidx[0]);
         } 
 
-        showheap(heap, heapidx, heapCount);
         moveHeapHead(heap, heapidx, heapCount);
         debugprint("After heap adjustment, ");
         showheap(heap, heapidx, heapCount);
