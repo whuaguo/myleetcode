@@ -38,8 +38,8 @@ int** combine(int n, int k, int* returnSize, int** returnColumnSizes){
     int answer[21] = {0};
     int count = 0;
 
-    int **ret = malloc(sizeof(int *)*10000);
-    *returnColumnSizes = malloc(sizeof(int)*10000);
+    int **ret = malloc(sizeof(int *)*5000);
+    *returnColumnSizes = malloc(sizeof(int)*5000);
     assert(ret != NULL);
     assert(*returnColumnSizes != NULL);
     *returnSize = 0;
