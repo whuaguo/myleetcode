@@ -112,12 +112,12 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize){
         if (!heap[0]) {
             //如果填入的为NULL，把堆尾放入堆头，缩小堆大小
             if (heapCount > 1) {
-                //printf("Move tail node to heap head %d, idx: %d\n", heap[heapCount -1]->val, heapidx[heapCount - 1]);
+                debugprint("Move tail node to heap head %d, idx: %d\n", heap[heapCount -1]->val, heapidx[heapCount - 1]);
                 heap[0] = heap[heapCount - 1];
                 heapidx[0] = heapidx[heapCount - 1];
                 heapCount--;
             } else {
-                //printf("done!\n");
+                debugprint("done!\n");
                 break;
             }
         } else {
