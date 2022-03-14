@@ -20,6 +20,7 @@ void setZeroes(int** matrix, int matrixSize, int* matrixColSize){
     for (int i = 0; i < matrixColSize[0]; i++) {
         if (matrix[0][i] == 0) {
             line0 = true;
+            break;
         }
     }
 
