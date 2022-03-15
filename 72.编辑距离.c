@@ -15,17 +15,17 @@ int minDistance(char* word1, char* word2) {
     word2++;
   }
 
-#if 0
-    char *w1 = word1 + strlen(word1) - 1;
-    char *w2 = word2 + strlen(word2) - 1;
+#if 1
+  char* w1 = word1 + strlen(word1) - 1;
+  char* w2 = word2 + strlen(word2) - 1;
 
-    while ((w1>=word1)&&(w2>=word2) && (*w1 == *w2)) {
-        w1--;
-        w2--;
-    }
+  while ((w1 >= word1) && (w2 >= word2) && (*w1 == *w2)) {
+    w1--;
+    w2--;
+  }
 
-    *(w1 + 1) = '\0';
-    *(w2 + 1) = '\0';
+  *(w1 + 1) = '\0';
+  *(w2 + 1) = '\0';
 #endif
   int len1 = strlen(word1);
   int len2 = strlen(word2);
