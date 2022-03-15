@@ -12,7 +12,6 @@ bool isMatchStar(char *s, char *p) {
 
     if (plen <= 2) return true;
     if (!slen) return false;
-    //if ((plen - slen == 2)&&!memcmp(p+1, s, slen)) return true;
 
     bool dp[2000][2000] = {0};
 
@@ -20,7 +19,7 @@ bool isMatchStar(char *s, char *p) {
     dp[0][1] = true;
     for (int i = 0; i < slen; i++) {
         dp[i][1] = true;
-        
+
         for (int j = 1; j < plen; j++) {
             if (p[j] == '*') {
                 dp[i+1][j+1] = (dp[i+1][j] || dp[i][j+1]); 
