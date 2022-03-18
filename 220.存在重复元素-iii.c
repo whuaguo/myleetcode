@@ -22,7 +22,7 @@ typedef struct node
 #define mapNodeCompare intCompare
 #define absCompare(a, b, t) ((a & 0x80000000) ^ (b & 0x80000000)) ? (a <= b + t) : ((a - b) <= t)
 #define getIdx(u, size) (((size) < 0) ? (((u) >= 0) ? 0 : -1) : (((u) >= 0) ? ((u) / (size)) : ((((u) + 1) / (size)) - 1)))
-#define FREEMEM      \
+#define CLEANUP      \
     {                \
         free(lists); \
         free(idxs);  \
@@ -60,7 +60,7 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
     {
         if (lists[idx].idx == lists[idx + 1].idx || mapNodeAbsCompare(lists, idx, t))
         {
-            FREEMEM;
+            CLEANUP;
             return true;
         }
     }
@@ -75,7 +75,7 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
         {
             if (bsearch(&newIdx, lists, size, sizeof(mapNode), intCompare))
             {
-                FREEMEM;
+                CLEANUP;
                 return true;
             }
 
@@ -83,7 +83,7 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
             {
                 if ((*(item - 1)).idx == newIdx)
                 {
-                    FREEMEM;
+                    CLEANUP;
                     return true;
                 }
 
@@ -98,7 +98,7 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
             {
                 if ((*(item + 1)).idx == newIdx)
                 {
-                    FREEMEM;
+                    CLEANUP;
                     return true;
                 }
 
@@ -115,18 +115,18 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
         item->value = nums[idx];
         if ((item != lists) && (absCompare(nums[idx], (*(item - 1)).value, t)))
         {
-            FREEMEM;
+            CLEANUP;
             return true;
         }
 
         if ((item != end) && (absCompare((*(item + 1)).value, nums[idx], t)))
         {
-            FREEMEM;
+            CLEANUP;
             return true;
         }
     }
 
-    FREEMEM;
+    CLEANUP;
     return false;
 #elif (defined QSORT)
     int size = (k < numsSize) ? (k + 1) : numsSize;
