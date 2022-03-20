@@ -34,7 +34,6 @@ int pmapNodeCompare(const void *a, const void *b)
 #define CLEANUP      \
     {                \
         free(lists); \
-        free(idxs); \
     }
 
 bool mapNodeAbsCompare(mapNode *lists, int idx, int t)
@@ -76,14 +75,15 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
             CLEANUP;
             return true;
         }
-    }
+    } 
 
     mapNode **end = plists + k;
     for (int idx = size; idx < numsSize; idx++)
     {
         mapNode *keyNode = &lists[idx % size];
         int newIdx = getIdx(nums[idx], dis);
-
+        mapNode **item;
+        
         if (keyNode->idx != newIdx)
         {
             mapNode *newNode = &newIdx;
@@ -92,34 +92,31 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
                 CLEANUP;
                 return true;
             }
+
+            item = bsearch(&keyNode, plists, size, sizeof(mapNode*), pmapNodeCompare);
+            if (keyNode->idx > newIdx) {
+                while (item > plists)
+                {
+                    if ((*(item - 1))->idx < newIdx)
+                        break;
+
+                    *item = *(item - 1);
+                    item--;
+                }
+            } else {
+                while (item < end)
+                {
+                    if ((*(item + 1))->idx > newIdx)
+                        break;
+
+                    *item = *(item + 1);
+                    item++;
+                }
+            }
         }
-
-        mapNode **item = bsearch(&keyNode, plists, size, sizeof(mapNode*), pmapNodeCompare);
-        if ((*item)->idx != newIdx)
+        else 
         {
-            (*item)->idx = newIdx;
-            (*item)->value = nums[idx];
-
-            while (item > plists)
-            {
-                if ((*(item - 1))->idx < newIdx)
-                    break;
-
-                *item = *(item - 1);
-                item--;
-            }
-            while (item < end)
-            {
-                if ((*(item + 1))->idx > newIdx)
-                    break;
-
-                *item = *(item + 1);
-                item++;
-            }
-
-            *item = keyNode;
-        } else {
-            (*item)->value = nums[idx];
+            item = bsearch(&keyNode, plists, size, sizeof(mapNode*), pmapNodeCompare);
         }
 
         if ((item != plists) && (absCompare(nums[idx], (*(item - 1))->value, t))||
@@ -128,6 +125,10 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
             CLEANUP;
             return true;
         }
+
+        keyNode->value = nums[idx];
+        keyNode->idx = newIdx;
+        *item = keyNode;
     }
 
     CLEANUP;
@@ -173,34 +174,38 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
                 return true;
             }
 
-            while (item > lists)
-            {
-                if ((*(item - 1)).idx < newIdx)
-                    break;
+            if (item->idx > newIdx) {
+                while (item > lists)
+                {
+                    if ((*(item - 1)).idx < newIdx)
+                        break;
 
-                memcpy(item, item - 1, sizeof(mapNode));
-                item--;
+                    *item = *(item - 1);
+                    item--;
+                }
+            } else {
+                while (item < end)
+                {
+                    if ((*(item + 1)).idx > newIdx)
+                        break;
+
+                    *item = *(item + 1);
+                    item++;
+                }
             }
 
-            while (item < end)
-            {
-                if ((*(item + 1)).idx > newIdx)
-                    break;
-
-                memcpy(item, item + 1, sizeof(mapNode));
-                item++;
-            }
+            item->idx = newIdx;
         }
 
-        idxs[idx] = newIdx;
-        item->idx = newIdx;
-        item->value = nums[idx];
         if ((item != lists) && (absCompare(nums[idx], (*(item - 1)).value, t)) ||
             (item != end) && (absCompare((*(item + 1)).value, nums[idx], t)))
         {
             CLEANUP;
             return true;
         }
+
+        idxs[idx] = newIdx;
+        item->value = nums[idx];
     }
 
     CLEANUP;
@@ -244,10 +249,8 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
             item = item + 1;
         }
 
-        if ((item != lists) && (absCompare(new, *(item - 1), t)))
-            return true;
-
-        if ((item != (lists + k)) && (absCompare(*(item + 1), new, t)))
+        if ((item != lists) && (absCompare(new, *(item - 1), t))||
+            (item != (lists + k)) && (absCompare(*(item + 1), new, t)))
             return true;
 
         *item = new;
