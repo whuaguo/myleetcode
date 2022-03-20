@@ -5,6 +5,7 @@
  */
 
 // @lc code=start
+//#define QMAP 1
 #define MAP 1
 #define QSORT 1
 
@@ -12,20 +13,28 @@ int intCompare(const void *a, const void *b)
 {
     return (*(int *)a > *(int *)b) ? 1 : ((*(int *)a == *(int *)b) ? 0 : -1);
 }
+#define absCompare(a, b, t) ((a & 0x80000000) ^ (b & 0x80000000)) ? (a <= b + t) : ((a - b) <= t)
 
+#if (defined MAP || defined QMAP)
 typedef struct node
 {
     int idx;
     int value;
 } mapNode;
 
+int pmapNodeCompare(const void *a, const void *b)
+{
+    mapNode *p1 = *(mapNode **)a;
+    mapNode *p2 = *(mapNode **)b;
+    return (p1->idx > p2->idx) ? 1 : ((p1->idx == p2->idx) ? 0 : -1);
+}
+
 #define mapNodeCompare intCompare
-#define absCompare(a, b, t) ((a & 0x80000000) ^ (b & 0x80000000)) ? (a <= b + t) : ((a - b) <= t)
 #define getIdx(u, size) (((size) < 0) ? (((u) >= 0) ? 0 : -1) : (((u) >= 0) ? ((u) / (size)) : ((((u) + 1) / (size)) - 1)))
 #define CLEANUP      \
     {                \
         free(lists); \
-        free(idxs);  \
+        free(idxs); \
     }
 
 bool mapNodeAbsCompare(mapNode *lists, int idx, int t)
@@ -33,12 +42,97 @@ bool mapNodeAbsCompare(mapNode *lists, int idx, int t)
     return (lists[idx + 1].idx == (lists[idx].idx + 1)) ? absCompare(lists[idx + 1].value, lists[idx].value, t) : false;
 }
 
+bool pMapNodeAbsCompare(mapNode **plists, int idx, int t) {
+    return (plists[idx + 1]->idx == (plists[idx]->idx + 1)) ? absCompare(plists[idx + 1]->value, plists[idx]->value, t) : false;
+}
+#endif
+
 bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
 {
     if (k == 0)
         return false;
+#if (defined QMAP)
+    int size = (k < numsSize) ? (k + 1) : numsSize;
+    int dis = (t == 0x7fffffff) ? -1 : (t + 1);
 
-#if (defined MAP)
+    mapNode *lists = malloc(sizeof(mapNode) * (size));
+    mapNode **plists = malloc(sizeof(mapNode *) *(size));
+    assert(lists != NULL);
+    assert(plists != NULL);
+
+    for (int idx = 0; idx < size; idx++)
+    {
+        lists[idx].idx = getIdx(nums[idx], dis);
+        lists[idx].value = nums[idx];
+        plists[idx] = &lists[idx];
+    }
+
+    qsort(plists, size, sizeof(mapNode *), pmapNodeCompare);
+
+    for (int idx = 0; idx < size - 1; idx++)
+    {
+        if ((plists[idx]->idx == plists[idx + 1]->idx) || pMapNodeAbsCompare(plists, idx, t))
+        {
+            CLEANUP;
+            return true;
+        }
+    }
+
+    mapNode **end = plists + k;
+    for (int idx = size; idx < numsSize; idx++)
+    {
+        mapNode *keyNode = &lists[idx % size];
+        int newIdx = getIdx(nums[idx], dis);
+
+        if (keyNode->idx != newIdx)
+        {
+            mapNode *newNode = &newIdx;
+            if (bsearch(&newNode, plists, size, sizeof(mapNode *), pmapNodeCompare))
+            {
+                CLEANUP;
+                return true;
+            }
+        }
+
+        mapNode **item = bsearch(&keyNode, plists, size, sizeof(mapNode*), pmapNodeCompare);
+        if ((*item)->idx != newIdx)
+        {
+            (*item)->idx = newIdx;
+            (*item)->value = nums[idx];
+
+            while (item > plists)
+            {
+                if ((*(item - 1))->idx < newIdx)
+                    break;
+
+                *item = *(item - 1);
+                item--;
+            }
+            while (item < end)
+            {
+                if ((*(item + 1))->idx > newIdx)
+                    break;
+
+                *item = *(item + 1);
+                item++;
+            }
+
+            *item = keyNode;
+        } else {
+            (*item)->value = nums[idx];
+        }
+
+        if ((item != plists) && (absCompare(nums[idx], (*(item - 1))->value, t))||
+            (item != end)    && (absCompare((*(item + 1))->value, nums[idx], t)))
+        {
+            CLEANUP;
+            return true;
+        }
+    }
+
+    CLEANUP;
+    return false;
+#elif (defined MAP)
     int size = (k < numsSize) ? (k + 1) : numsSize;
     int dis = (t == 0x7fffffff) ? -1 : (t + 1);
 
@@ -81,12 +175,6 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
 
             while (item > lists)
             {
-                if ((*(item - 1)).idx == newIdx)
-                {
-                    CLEANUP;
-                    return true;
-                }
-
                 if ((*(item - 1)).idx < newIdx)
                     break;
 
@@ -96,12 +184,6 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
 
             while (item < end)
             {
-                if ((*(item + 1)).idx == newIdx)
-                {
-                    CLEANUP;
-                    return true;
-                }
-
                 if ((*(item + 1)).idx > newIdx)
                     break;
 
@@ -113,13 +195,8 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
         idxs[idx] = newIdx;
         item->idx = newIdx;
         item->value = nums[idx];
-        if ((item != lists) && (absCompare(nums[idx], (*(item - 1)).value, t)))
-        {
-            CLEANUP;
-            return true;
-        }
-
-        if ((item != end) && (absCompare((*(item + 1)).value, nums[idx], t)))
+        if ((item != lists) && (absCompare(nums[idx], (*(item - 1)).value, t)) ||
+            (item != end) && (absCompare((*(item + 1)).value, nums[idx], t)))
         {
             CLEANUP;
             return true;
