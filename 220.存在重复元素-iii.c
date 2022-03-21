@@ -174,7 +174,8 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
                 return true;
             }
 
-            if (item->idx > newIdx) {
+            if (item->idx > newIdx)
+            {
                 while (item > lists)
                 {
                     if ((*(item - 1)).idx < newIdx)
@@ -183,7 +184,9 @@ bool containsNearbyAlmostDuplicate(int *nums, int numsSize, int k, int t)
                     *item = *(item - 1);
                     item--;
                 }
-            } else {
+            }
+            else
+            {
                 while (item < end)
                 {
                     if ((*(item + 1)).idx > newIdx)
