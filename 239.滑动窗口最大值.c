@@ -39,13 +39,12 @@ int idxqCompare(const void *a, const void *b)
 
 void idxqAdd(int *queue, int *qsize, int gnumidx)
 {
-    int mid;
     int left = 0;
     int right = *qsize - 1;
 
     while (left <= right)
     {
-        mid = (left + right) >> 1;
+        int mid = (left + right) >> 1;
 
         if (gnums[queue[mid]] > gnums[gnumidx])
         {
@@ -144,32 +143,34 @@ int *maxSlidingWindow(int *nums, int numsSize, int k, int *returnSize)
     assert(qidx != NULL);
     assert(ret != NULL);
 
-    int qsize = k;
+    int *queue = qidx;
     gnums = nums;
+
+    int qsize = 0;
     for (int idx = 0; idx < k; idx++)
     {
-        qidx[idx] = idx;
+        idxqAdd(qidx, &qsize, idx);
     }
-    qsort(qidx, qsize, sizeof(int), idxqCompare);
+
     // logqueue(qidx, qsize);
 
     ret[0] = nums[qidx[0]];
     // log("The %dth result is %d\n", 0, nums[qidx[0]]);
     for (int idx = k; idx < numsSize; idx++)
     {
-        idxqAdd(qidx, &qsize, idx);
-
-        while (qidx[0] <= idx - k)
+        while (qsize && (qidx[0] <= idx - k))
         {
             qidx++;
             qsize--;
         }
+        idxqAdd(qidx, &qsize, idx);
+
         // logqueue(qidx, qsize);
         // log("The %dth result is %d\n", idx - k + 1, nums[qidx[0]]);
         ret[idx - k + 1] = nums[qidx[0]];
     }
 
-    free(qidx);
+    free(queue);
     *returnSize = numsSize - k + 1;
     return ret;
 #endif
