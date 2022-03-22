@@ -14,8 +14,6 @@
 #define QUEUE 1
 
 #if (defined QUEUE)
-int *gnums;
-
 #ifdef DEBUG
 #define log printf
 void logqueue(int *queue, int qsize)
@@ -32,12 +30,7 @@ void logqueue(int *queue, int qsize)
 #define logqueue
 #endif
 
-int idxqCompare(const void *a, const void *b)
-{
-    return (gnums[*(int *)b] - gnums[*(int *)a]);
-}
-
-void idxqAdd(int *queue, int *qsize, int gnumidx)
+void idxqAdd(int *queue, int *qsize, int *nums, int numidx)
 {
     int left = 0;
     int right = *qsize - 1;
@@ -46,7 +39,7 @@ void idxqAdd(int *queue, int *qsize, int gnumidx)
     {
         int mid = (left + right) >> 1;
 
-        if (gnums[queue[mid]] > gnums[gnumidx])
+        if (nums[queue[mid]] > nums[numidx])
         {
             left = mid + 1;
         }
@@ -56,7 +49,7 @@ void idxqAdd(int *queue, int *qsize, int gnumidx)
         }
     }
 
-    queue[left] = gnumidx;
+    queue[left] = numidx;
     *qsize = left + 1;
 }
 #endif
@@ -144,34 +137,34 @@ int *maxSlidingWindow(int *nums, int numsSize, int k, int *returnSize)
     assert(ret != NULL);
 
     int *queue = qidx;
-    gnums = nums;
 
     int qsize = 0;
     for (int idx = 0; idx < k; idx++)
     {
-        idxqAdd(qidx, &qsize, idx);
+        idxqAdd(qidx, &qsize, nums, idx);
     }
 
     // logqueue(qidx, qsize);
 
+    int retidx = 1;
     ret[0] = nums[qidx[0]];
     // log("The %dth result is %d\n", 0, nums[qidx[0]]);
     for (int idx = k; idx < numsSize; idx++)
     {
-        while (qsize && (qidx[0] <= idx - k))
+        if (qsize && (qidx[0] <= idx - k))
         {
             qidx++;
             qsize--;
         }
-        idxqAdd(qidx, &qsize, idx);
+        idxqAdd(qidx, &qsize, nums, idx);
 
         // logqueue(qidx, qsize);
         // log("The %dth result is %d\n", idx - k + 1, nums[qidx[0]]);
-        ret[idx - k + 1] = nums[qidx[0]];
+        ret[retidx++] = nums[qidx[0]];
     }
 
     free(queue);
-    *returnSize = numsSize - k + 1;
+    *returnSize = retidx;
     return ret;
 #endif
 #if (defined HEAP)
