@@ -151,7 +151,7 @@ int *maxSlidingWindow(int *nums, int numsSize, int k, int *returnSize)
     // log("The %dth result is %d\n", 0, nums[qidx[0]]);
     for (int idx = k; idx < numsSize; idx++)
     {
-        if (qsize && (qidx[0] <= idx - k))
+        if ((qidx[0] <= idx - k))
         {
             qidx++;
             qsize--;
