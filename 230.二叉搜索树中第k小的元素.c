@@ -62,7 +62,7 @@ void heapMove(int *heap, int heapSize, int idx)
 
 void heapChange(int *heap, int *heapSize, int heapSizeMax, int newValue)
 {
-    log("Visit %d\n", newValue);
+    // log("Visit %d\n", newValue);
 
     if (*heapSize < heapSizeMax)
     {
