@@ -40,29 +40,26 @@ bool isNumsAdditive(char *nums, int len1, int len2)
         sprintf(sumstr, "%ld", sum);
 
         int sumstrlen = strlen(sumstr);
-        if (sumlen + sumstrlen > len)
+        if ((sumlen + sumstrlen > len) ||
+            (memcmp(nums + sumlen, sumstr, sumstrlen)))
         {
             return false;
         }
 
-        if (!memcmp(nums + sumlen, sumstr, sumstrlen))
+        if (sumlen + sumstrlen == len)
         {
-            if (sumlen + sumstrlen == len)
-            {
-                return true;
-            }
-            num1 = num2;
-            num2 = sum;
-            sumlen += sumstrlen;
+            return true;
         }
-        else
-        {
-            return false;
-        }
+        num1 = num2;
+        num2 = sum;
+        sumlen += sumstrlen;
     }
 
     return false;
 }
+
+#define MAX(n1, n2) ((n1) > (n2) ? (n1) : (n2))
+#define SUM(n1, n2) ((n1) + (n2))
 
 bool isAdditiveNumber(char *num)
 {
@@ -70,7 +67,7 @@ bool isAdditiveNumber(char *num)
 
     for (int len1 = 1; len1 <= (len >> 1); len1++)
     {
-        for (int len2 = 1; ((len1 > len2) ? len1 : len2) <= len - (len2 + len1); len2++)
+        for (int len2 = 1; MAX(len1, len2) + SUM(len1, len2) <= len; len2++)
         {
             if (isNumsAdditive(num, len1, len2))
             {
