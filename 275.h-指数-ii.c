@@ -1,14 +1,10 @@
 /*
- * @lc app=leetcode.cn id=274 lang=c
+ * @lc app=leetcode.cn id=275 lang=c
  *
- * [274] H 指数
+ * [275] H 指数 II
  */
 
 // @lc code=start
-int intCompare(const void *a, const void *b)
-{
-    return (*(int *)a - *(int *)b);
-}
 
 int hIndex(int *citations, int citationsSize)
 {
@@ -17,9 +13,7 @@ int hIndex(int *citations, int citationsSize)
         return 0;
     }
 
-    qsort(citations, citationsSize, sizeof(int), intCompare);
-
-#ifdef QSORT
+#ifndef QSORT
     int idx;
     for (idx = citationsSize - 1; idx >= 0; idx--)
     {
