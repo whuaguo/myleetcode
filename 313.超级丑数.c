@@ -5,7 +5,7 @@
  */
 
 // @lc code=start
-#define log printf
+//#define log printf
 int nthSuperUglyNumber(int n, int *primes, int primesSize)
 {
     int *dp = malloc(sizeof(int) * (n + 1));
