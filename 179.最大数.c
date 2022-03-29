@@ -21,34 +21,25 @@ int intStrCompare(const void *a, const void *b)
     {
         int delta = pb[idx2++] - pa[idx1++];
 
+        //如果不相等，返回
         if (delta)
-        {
-            //如果不相等，返回
             return delta;
-        }
 
         if (idx1 == lena)
         {
-            if (lena != lenb)
-            {
-                // a轮回到b
-                pa = *(char **)b;
-                idx1 = 0;
-            }
-            else
-            {
-                //长度相对，字符串相对，返回0
+            //长度相对，字符串相对，返回0
+            if (lena == lenb)
                 return 0;
-            }
+
+            // a轮回到b
+            pa = *(char **)b;
+            idx1 = 0;
         }
-        else
+        else if (idx2 == lenb)
         {
-            if (idx2 == lenb)
-            {
-                // b轮回到a
-                pb = *(char **)a;
-                idx2 = 0;
-            }
+            // b轮回到a
+            pb = *(char **)a;
+            idx2 = 0;
         }
     }
 
