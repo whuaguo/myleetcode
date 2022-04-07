@@ -10,6 +10,7 @@
  * Note: The returned array must be malloced, assume caller calls free().
  */
 #define log printf
+#if 0
 int findIdxInSortNums(int *nums, int *numsSize, int value)
 {
     /*
@@ -69,6 +70,11 @@ int findIdxInSortNums(int *nums, int *numsSize, int value)
 
     return ret;
 }
+#endif
+int intCompare(const void *a, const void *b)
+{
+    return (*(int *)a - *(int *)b);
+}
 
 int *countSmaller(int *nums, int numsSize, int *returnSize)
 {
@@ -78,8 +84,10 @@ int *countSmaller(int *nums, int numsSize, int *returnSize)
 
     int *sortnums = malloc(sizeof(int) * numsSize);
     assert(sortnums != NULL);
-    int sortnumsSize = 1;
+    int sortnumsSize = numsSize;
 
+    /*
+    int sortnumsSize = 1;
     ret[numsSize - 1] = 0;
     sortnums[0] = nums[numsSize - 1];
 
@@ -87,6 +95,55 @@ int *countSmaller(int *nums, int numsSize, int *returnSize)
     {
         int index = findIdxInSortNums(sortnums, &sortnumsSize, nums[idx]);
         ret[idx] = index;
+    }
+    */
+
+    memcpy(sortnums, nums, sizeof(int) * numsSize);
+    qsort(sortnums, numsSize, sizeof(int), intCompare);
+
+    int i = 1;
+    int j = 1;
+    while (j < numsSize)
+    {
+        if (sortnums[j] != sortnums[i - 1])
+        {
+            if (i != j)
+            {
+                sortnums[i] = sortnums[j];
+            }
+            j++;
+            i++;
+        }
+        else
+        {
+            j++;
+        }
+    }
+    sortnumsSize = i;
+
+    /*
+    log("The sort nums(%d) are [", sortnumsSize);
+    for (int idx = 0; idx < sortnumsSize; idx++)
+    {
+        log("%d,", sortnums[idx]);
+    }
+    log("]\n");
+    */
+    int *sortCounts = malloc(sizeof(int) * sortnumsSize);
+    assert(sortCounts != NULL);
+    memset(sortCounts, 0, sizeof(int) * sortnumsSize);
+
+    for (int idx = numsSize - 1; idx >= 0; idx--)
+    {
+        int *sortNumber = (int *)bsearch(&nums[idx], sortnums, sortnumsSize, sizeof(int), intCompare);
+        int sortIdx = sortNumber - sortnums;
+
+        for (int i = sortIdx; i < sortnumsSize; i++)
+        {
+            sortCounts[i]++;
+        }
+
+        ret[idx] = sortIdx ? sortCounts[sortIdx - 1] : 0;
     }
 
     return ret;
