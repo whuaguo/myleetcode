@@ -11,35 +11,28 @@ int maxSubArray(int *nums, int numsSize)
     if (!numsSize)
         return 0;
 
-    int max = nums[0];
-    int total = nums[0];
-    int sum = total;
+    int max = 0;
+    int sum = nums[0];
 
-    int left = 1, right = 1;
+    int left = 0, right = 1;
 
     while (left < numsSize || right < numsSize)
     {
-        while (nums[right] > 0)
+        while ((right < numsSize) && (nums[right] > 0))
         {
             sum += nums[right];
             right++;
         }
 
-        total = sum;
-        if (total > max)
+        while ((left < numsSize) && (nums[left] < 0))
         {
-            max = total;
-        }
-
-        while (nums[left] < 0)
-        {
-            total -= nums[left];
+            sum -= nums[left];
             left++;
         }
 
-        if (total > max)
+        if (sum > max)
         {
-            max = total;
+            max = sum;
         }
     }
 
