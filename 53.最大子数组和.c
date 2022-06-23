@@ -7,27 +7,20 @@
 // @lc code=start
 int maxSubArray(int *nums, int numsSize)
 {
-    if (!numsSize)
-        return 0;
+    int max = 0x80000000;
+    int sum = 0;
 
-    int max = nums[0];
-    int sum = max;
-    int right = 1;
-
-    while (right < numsSize)
+    for (int right = 0; right < numsSize; right++)
     {
-        if (sum < 0)
-        {
-            sum = nums[right++];
-        }
-        else
-        {
-            sum += nums[right++];
-        }
-
+        sum += nums[right];
         if (sum > max)
         {
             max = sum;
+        }
+
+        if (sum < 0)
+        {
+            sum = 0;
         }
     }
 
