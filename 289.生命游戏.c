@@ -15,7 +15,7 @@ void gameOfLife(int **board, int boardSize, int *boardColSize)
             int lives;
 
             //计算lives的数目的时候，使用最低位
-            lives = i && (j > 0) && (board[i - 1][j - 1] & 1) ? 1 : 0;
+            lives = i && j && (board[i - 1][j - 1] & 1) ? 1 : 0;
             lives += i && (board[i - 1][j] & 1) ? 1 : 0;
             lives += i && (j + 1 < boardColSize[i]) && (board[i - 1][j + 1] & 1) ? 1 : 0;
 
