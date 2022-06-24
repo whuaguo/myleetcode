@@ -38,8 +38,12 @@ int numSquares(int n)
         int min = i;
         for (int j = 1; j <= (i >> 1); j++)
         {
-            int dpij = dp[j] + dp[i - j];
+            if (dp[j] != 1)
+            {
+                continue;
+            }
 
+            int dpij = 1 + dp[i - j];
             if (dpij < min)
             {
                 min = dpij;
