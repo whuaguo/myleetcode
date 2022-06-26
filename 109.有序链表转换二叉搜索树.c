@@ -23,7 +23,7 @@
 
 
 struct TreeNode* sortedListToBST(struct ListNode* head){
-
+    struct TreeNode *nodeArray;
 }
 // @lc code=end
 
