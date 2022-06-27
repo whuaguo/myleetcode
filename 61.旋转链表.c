@@ -21,34 +21,32 @@ struct ListNode *rotateRight(struct ListNode *head, int k)
     }
 
     struct ListNode *tail = head;
-    int lk = k;
-    int len = 0;
+    int move = k;
 
 retry:
-    //先向前移动，要么K步，要么到尾部
-    while (tail->next && lk)
+    //不需要移动，直接返回
+    if (!move)
     {
-        tail = tail->next;
-        len++;
-        lk--;
+        return head;
     }
 
-    if (lk)
+    //先向前移动，要么K步，要么到尾部
+    while (tail->next && move)
     {
-        //先移动到尾部，说明k比链表len大，重新计算真正需要移动的步数
-        tail = head;
-        lk = k % ++len;
+        tail = tail->next;
+        move--;
+    }
 
-        if (!lk)
-        {
-            //不需要移动，直接返回
-            return head;
-        }
-        else
-        {
-            //需要移动，重新开始
-            goto retry;
-        }
+    if (move)
+    {
+        int len = k - (--move);
+
+        //先移动到尾部，说明k比链表len大，重新计算真正需要移动的步数
+        move = k % len;
+        tail = head;
+
+        //需要移动，重新开始
+        goto retry;
     }
 
     //快慢指针开始同步移动
