@@ -19,8 +19,8 @@ void gameOfLife(int **board, int boardSize, int *boardColSize)
             lives += i && (board[i - 1][j] & 1) ? 1 : 0;
             lives += i && (j + 1 < boardColSize[i]) && (board[i - 1][j + 1] & 1) ? 1 : 0;
 
-            lives += (i >= 0) && j && (board[i][j - 1] & 1) ? 1 : 0;
-            lives += (i >= 0) && (j + 1 < boardColSize[i]) && (board[i][j + 1] & 1) ? 1 : 0;
+            lives += j && (board[i][j - 1] & 1) ? 1 : 0;
+            lives += (j + 1 < boardColSize[i]) && (board[i][j + 1] & 1) ? 1 : 0;
 
             lives += (i + 1 < boardSize) && j && (board[i + 1][j - 1] & 1) ? 1 : 0;
             lives += (i + 1 < boardSize) && (board[i + 1][j] & 1) ? 1 : 0;
