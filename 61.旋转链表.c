@@ -18,10 +18,11 @@ struct ListNode *rotateRight(struct ListNode *head, int k)
     struct ListNode *tail = head;
     struct ListNode *newHead = head;
 
-    int idx = k;
-    while (tail->next && (k-- > 0))
+    int move = k;
+
+    while (newHead->next && (move--))
     {
-        tail = tail->next;
+        newHead = newHead->next;
     }
 
     return newHead;
