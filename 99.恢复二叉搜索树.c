@@ -27,24 +27,20 @@ bool findAbnormalNode(struct TreeNode *root,
         }
     }
 
-    if (*pPrev)
+    if ((*pPrev) && ((*pPrev)->val > root->val))
     {
-        if ((*pPrev)->val > root->val)
+        //前一个节点比当前节点大，必然是交换节点的情况
+        *pNode2 = root;
+        if (*pNode1)
         {
-            //前一个节点比当前节点大，必然是交换节点的情况
-            *pNode2 = root;
-            if (NULL == *pNode1)
-            {
-                //第一个节点为空，代表第一次碰到，那么前一个节点肯定是需要寻找的第一个节点。
-                *pNode1 = *pPrev;
-            }
-            else
-            {
-                //第一个节点不为空，那么root肯定是第二个节点，找到所有节点，返回
-                return true;
-            }
+            //第一个节点不为空，那么root肯定是第二个节点，找到所有节点，返回
+            return;
         }
+
+        //第一个节点为空，代表第一次碰到，那么前一个节点肯定是需要寻找的第一个节点。
+        *pNode1 = *pPrev;
     }
+
     //设置前一个节点
     *pPrev = root;
 
@@ -56,6 +52,7 @@ bool findAbnormalNode(struct TreeNode *root,
             return true;
         }
     }
+
     return false;
 }
 
