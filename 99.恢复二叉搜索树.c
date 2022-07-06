@@ -34,7 +34,7 @@ bool findAbnormalNode(struct TreeNode *root,
         if (*pNode1)
         {
             //第一个节点不为空，那么root肯定是第二个节点，找到所有节点，返回
-            return;
+            return true;
         }
 
         //第一个节点为空，代表第一次碰到，那么前一个节点肯定是需要寻找的第一个节点。
