@@ -6,6 +6,7 @@
 
 // @lc code=start
 
+
 inline char *makestr (char * s, int len) {
     char *retstr;
 
